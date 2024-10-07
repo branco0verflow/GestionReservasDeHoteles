@@ -72,15 +72,15 @@ public class HuespedView {
             }
         }
 
-        System.out.println("Ingrese su número de documento: ");
+        System.out.print("Ingrese su número de documento: ");
         int numDoc = scanner.nextInt();
 
-        System.out.println("Ingrese su fecha de nacimiento YYYY-MM--DD: ");
+        System.out.print("Ingrese su fecha de nacimiento YYYY-MM--DD: ");
         String fechaNac = scanner.nextLine();
 
 
         List<Pais> listPaisess = huespedController.listPaises();
-        System.out.println("Los países existentes son:");
+        System.out.println("\n\n");
         System.out.println("---------------------------------------------");
 
         for (Pais pais : listPaisess){
@@ -115,7 +115,7 @@ public class HuespedView {
         System.out.println("---------------------------------------------");
 
         for (Huesped huesped : listHuesp){
-            System.out.println("Id:"+ huesped.getId() + "\nNombre: "+ huesped.getName() + "\nApellido Paterno: " + huesped.getApaterno()+ "\nApellido Materno: " + huesped.getAmaterno()+ huesped.getTipoDoc().getName()+ huesped.getNumDoc()+ huesped.getFechaNac() +"\nPais: " + huesped.getPais().getName());
+            System.out.println("Id:"+ huesped.getId() + "\nNombre: "+ huesped.getName() + "\nApellido Paterno: " + huesped.getApaterno()+ "\nApellido Materno: " + huesped.getAmaterno()+"\n"+ huesped.getTipoDoc().getName()+ ": " + huesped.getNumDoc()+"\nFecha de nacimineto: "+ huesped.getFechaNac() +"\nPais: " + huesped.getPais().getName());
             System.out.println("---------------------------------------------");
         }
     }

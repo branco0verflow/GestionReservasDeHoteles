@@ -19,7 +19,7 @@ public class Main {
             System.out.println("1. Ingresar Datos");
             System.out.println("2. Listar Datos");
             System.out.println("0. Salir");
-            System.out.println("");
+            System.out.println(" ");
             System.out.print("Ingrese la opción deseada: ");
             opcion = scanner.nextInt();
             switch (opcion) {
@@ -42,12 +42,7 @@ public class Main {
         scanner.close();
     }
 
-    private static void ingresarDatos() {
-        limpiarConsola();
-        System.out.println("Ingresar Datos:");
-        new Scanner(System.in).nextLine();
 
-    }
 
     private static void listarDatos() {
         limpiarConsola();

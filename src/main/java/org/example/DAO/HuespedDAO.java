@@ -80,11 +80,11 @@ public class HuespedDAO {
                 int id = resultSet.getInt(1);
                 String nombre = resultSet.getString(2);
                 String paterno = resultSet.getString(3);
-                String materno = resultSet.getString(3);
-                TipoDoc tipoDoc = new TipoDoc(resultSet.getInt(4), resultSet.getString(5));
-                int numDoc = resultSet.getInt(6);
-                String fechaNac = resultSet.getString(6);
-                Pais pais = new Pais(resultSet.getInt(7), resultSet.getString(8));
+                String materno = resultSet.getString(4);
+                TipoDoc tipoDoc = new TipoDoc(resultSet.getInt(5), resultSet.getString(6));
+                int numDoc = resultSet.getInt(7);
+                String fechaNac = resultSet.getString(8);
+                Pais pais = new Pais(resultSet.getInt(9), resultSet.getString(10));
 
                 // Crear el objeto Huesped y agregarlo a la lista
                 Huesped huesped = new Huesped(id, nombre, paterno, materno, tipoDoc, numDoc,fechaNac, pais);
