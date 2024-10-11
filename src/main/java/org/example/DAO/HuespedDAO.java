@@ -26,7 +26,6 @@ public class HuespedDAO {
         return connectionDAO.executeUpdate(query, idHuesped);
     }
 
-
     // Modificar huesped
     public boolean updateHuesped(Huesped huesped) {
         String query = "UPDATE huespedes SET nombre = ?, apaterno = ?, amaterno = ?, idTipoDoc = ?, numDoc = ?, fechaNac = ?, idPais = ?, telefono = ? WHERE idHuesped = ?";
@@ -35,11 +34,13 @@ public class HuespedDAO {
                 huesped.getTelefono(), huesped.getId());
     }
 
+    //Insertar huesped
     public boolean insertHuesped(Huesped huesped){
         String query = "INSERT INTO huespedes (nombre, apaterno, amaterno, idTipoDoc, numDoc, fechaNac, idPais) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
         return connectionDAO.executeUpdate(query, huesped.getName(), huesped.getApaterno(), huesped.getAmaterno(), huesped.getTipoDoc().getId(), huesped.getNumDoc(), huesped.getFechaNac(), huesped.getPais().getId());
     }
 
+    // Llamada a paises existentes
     public List<Pais> listPaises(){
         String query = "SELECT p.idPais, p.nombreP FROM paises p;";
         List<Pais> countryList = new ArrayList<>();
@@ -63,6 +64,7 @@ public class HuespedDAO {
         return countryList;
     }
 
+    // Llamada a Tipos de documentos
     public List<TipoDoc> listTipoDoc(){
         String query = "SELECT idTipoDoc, nombreTipo FROM tipoDoc;";
         List<TipoDoc> TiposList = new ArrayList<>();
@@ -86,7 +88,7 @@ public class HuespedDAO {
         return TiposList;
     }
 
-
+    // Listar huespedes
     public List<Huesped> listHuespedes(){
         String query = "select h.idHuesped, h.nombre, h.apaterno, h.amaterno, h.idTipoDoc, t.nombreTipo, h.numDoc, h.fechaNac, h.idPais, p.nombreP, h.telefono  from huespedes h, tipoDoc t, paises p Where h.idTipoDoc = t.idTipoDoc AND h.idPais = p.idPais;";
         List<Huesped> huesplist = new ArrayList<>();

@@ -15,9 +15,12 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         while (!salir) {
             limpiarConsola();
-            System.out.println("Menú Principal:");
-            System.out.println("1. Gestion de Huespedes");
-            System.out.println("2. Gestion de Hoteles");
+            System.out.println("Menú Principal:\n");
+            System.out.println("1. Gestión de Huespedes");
+            System.out.println("2. Gestión de Hoteles");
+            System.out.println("3. Gestión de Habitaciones");
+            System.out.println("4. Gestión de Tarifas");
+            System.out.println("5. Gestión de Reservas");
             System.out.println("0. Salir");
             System.out.println(" ");
             System.out.print("Ingrese la opción deseada: ");
@@ -29,6 +32,15 @@ public class Main {
                     huespView.manageHuesp();
                     break;
                 case 2:
+                    //listarDatos();
+                    break;
+                case 3:
+                    //listarDatos();
+                    break;
+                case 4:
+                    //listarDatos();
+                    break;
+                case 5:
                     //listarDatos();
                     break;
                 case 0:
