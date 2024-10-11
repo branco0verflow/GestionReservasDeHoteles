@@ -66,4 +66,12 @@ public class Hotel {
         this.cantEstrella = cantEstrella;
         this.direccion = direccion;
     }
+
+    public Hotel(String name, Pais pais, Ciudad ciudad, int cantEstrella, String direccion) {
+        this.name = name;
+        this.pais = pais;
+        this.ciudad = ciudad;
+        this.cantEstrella = cantEstrella;
+        this.direccion = direccion;
+    }
 }
