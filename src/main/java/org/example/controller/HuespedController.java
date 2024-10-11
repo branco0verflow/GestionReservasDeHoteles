@@ -11,6 +11,17 @@ public class HuespedController {
 
     private HuespedDAO huespedDAO;
 
+    // Elimianr al huesped
+    public boolean deleteHuesped(int idHuesped) {
+        return this.huespedDAO.deleteHuesped(idHuesped);
+    }
+
+
+    // metodo modificar huesped
+    public boolean updateHuesped(Huesped huesped) {
+        return this.huespedDAO.updateHuesped(huesped);
+    }
+
     public HuespedController() {
         this.huespedDAO = new HuespedDAO();
     }

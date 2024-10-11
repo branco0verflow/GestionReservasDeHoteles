@@ -11,6 +11,9 @@ public class Huesped {
     private int numDoc;
     private String fechaNac;
     private Pais pais;
+    private String telefono;
+
+
 
     public int getId() {
         return id;
@@ -76,18 +79,16 @@ public class Huesped {
         this.pais = pais;
     }
 
-    public Huesped(String name, String apaterno, String amaterno, TipoDoc tipoDoc, int numDoc, String fechaNac, Pais pais) {
-        this.name = name;
-        this.apaterno = apaterno;
-        this.amaterno = amaterno;
-        this.tipoDoc = tipoDoc;
-        this.numDoc = numDoc;
-        this.fechaNac = fechaNac;
-        this.pais = pais;
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
 
-    public Huesped(int id, String name, String apaterno, String amaterno, TipoDoc tipoDoc, int numDoc, String fechaNac, Pais pais) {
+    public Huesped(int id, String name, String apaterno, String amaterno, TipoDoc tipoDoc, int numDoc, String fechaNac, Pais pais, String telefono) {
         this.id = id;
         this.name = name;
         this.apaterno = apaterno;
@@ -96,9 +97,19 @@ public class Huesped {
         this.numDoc = numDoc;
         this.fechaNac = fechaNac;
         this.pais = pais;
+        this.telefono = telefono;
     }
 
-
+    public Huesped(String name, String apaterno, String amaterno, TipoDoc tipoDoc, int numDoc, String fechaNac, Pais pais, String telefono) {
+        this.name = name;
+        this.apaterno = apaterno;
+        this.amaterno = amaterno;
+        this.tipoDoc = tipoDoc;
+        this.numDoc = numDoc;
+        this.fechaNac = fechaNac;
+        this.pais = pais;
+        this.telefono = telefono;
+    }
 
 
 

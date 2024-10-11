@@ -16,19 +16,20 @@ public class Main {
         while (!salir) {
             limpiarConsola();
             System.out.println("Menú Principal:");
-            System.out.println("1. Ingresar Datos");
-            System.out.println("2. Listar Datos");
+            System.out.println("1. Gestion de Huespedes");
+            System.out.println("2. Gestion de Hoteles");
             System.out.println("0. Salir");
             System.out.println(" ");
             System.out.print("Ingrese la opción deseada: ");
             opcion = scanner.nextInt();
             switch (opcion) {
                 case 1:
+                    limpiarConsola();
                     huespView = new HuespedView(scanner);
                     huespView.manageHuesp();
                     break;
                 case 2:
-                    listarDatos();
+                    //listarDatos();
                     break;
                 case 0:
                     salir = true;
@@ -44,11 +45,7 @@ public class Main {
 
 
 
-    private static void listarDatos() {
-        limpiarConsola();
-        System.out.println("Listar Datos:");
-        new Scanner(System.in).nextLine();
-    }
+
 
     private static void limpiarConsola() {
         System.out.print("\033[H\033[2J");

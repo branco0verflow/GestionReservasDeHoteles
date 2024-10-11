@@ -5,10 +5,11 @@ import org.example.model.Huesped;
 import org.example.model.Pais;
 import org.example.model.TipoDoc;
 
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class HuespedDAO {
@@ -16,6 +17,23 @@ public class HuespedDAO {
 
 
     public HuespedDAO() {this.connectionDAO = new ConnectionDAO();}
+
+
+
+    // Eliminar Huesped
+    public boolean deleteHuesped(int idHuesped) {
+        String query = "DELETE FROM huespedes WHERE idHuesped = ?";
+        return connectionDAO.executeUpdate(query, idHuesped);
+    }
+
+
+    // Modificar huesped
+    public boolean updateHuesped(Huesped huesped) {
+        String query = "UPDATE huespedes SET nombre = ?, apaterno = ?, amaterno = ?, idTipoDoc = ?, numDoc = ?, fechaNac = ?, idPais = ?, telefono = ? WHERE idHuesped = ?";
+        return connectionDAO.executeUpdate(query, huesped.getName(), huesped.getApaterno(), huesped.getAmaterno(),
+                huesped.getTipoDoc().getId(), huesped.getNumDoc(), huesped.getFechaNac(), huesped.getPais().getId(),
+                huesped.getTelefono(), huesped.getId());
+    }
 
     public boolean insertHuesped(Huesped huesped){
         String query = "INSERT INTO huespedes (nombre, apaterno, amaterno, idTipoDoc, numDoc, fechaNac, idPais) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
@@ -70,7 +88,7 @@ public class HuespedDAO {
 
 
     public List<Huesped> listHuespedes(){
-        String query = "select h.idHuesped, h.nombre, h.apaterno, h.amaterno, h.idTipoDoc, t.nombreTipo, h.numDoc, h.fechaNac, h.idPais, p.nombreP  from huespedes h, tipoDoc t, paises p Where h.idTipoDoc = t.idTipoDoc AND h.idPais = p.idPais;";
+        String query = "select h.idHuesped, h.nombre, h.apaterno, h.amaterno, h.idTipoDoc, t.nombreTipo, h.numDoc, h.fechaNac, h.idPais, p.nombreP, h.telefono  from huespedes h, tipoDoc t, paises p Where h.idTipoDoc = t.idTipoDoc AND h.idPais = p.idPais;";
         List<Huesped> huesplist = new ArrayList<>();
 
         try{
@@ -85,9 +103,10 @@ public class HuespedDAO {
                 int numDoc = resultSet.getInt(7);
                 String fechaNac = resultSet.getString(8);
                 Pais pais = new Pais(resultSet.getInt(9), resultSet.getString(10));
+                String telefono = resultSet.getString(11);
 
                 // Crear el objeto Huesped y agregarlo a la lista
-                Huesped huesped = new Huesped(id, nombre, paterno, materno, tipoDoc, numDoc,fechaNac, pais);
+                Huesped huesped = new Huesped(id, nombre, paterno, materno, tipoDoc, numDoc,fechaNac, pais, telefono);
                 huesplist.add(huesped);
             }
         }catch (SQLException ex){
