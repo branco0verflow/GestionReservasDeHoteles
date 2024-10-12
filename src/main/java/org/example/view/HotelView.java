@@ -14,7 +14,6 @@ public class HotelView {
     private Scanner scanner;
 
 
-
     public HotelView(Scanner scanner) { this.hotelController = new HotelController(); this.scanner = scanner;}
 
     public void manageHotel() {
@@ -38,7 +37,7 @@ public class HotelView {
                     viewAllHotels();
                     break;
                 case 3:
-                    //updateHuesped();
+                    updateHotel();
                     break;
                 case 4:
                     deleteHotel();
@@ -107,55 +106,76 @@ public class HotelView {
         }
     }
 
-
-    /*public void updateHotel() {
+    public void updateHotel() {
         System.out.print("Ingrese el ID del hotel a modificar: ");
         int idHotel = scanner.nextInt();
-        scanner.nextLine();  // Consumir la nueva línea
+        scanner.nextLine(); // Consumir la nueva línea
 
         List<Hotel> hotelesList = hotelController.getAllHotels();
-        for(Hotel hotel : hotelesList){
-            if (hotel.getId() != idHotel) {
+        boolean hotelEncontrado = false;
 
-
+        for (Hotel hotel : hotelesList) {
+            if (hotel.getId() == idHotel) {
+                hotelEncontrado = true;
 
                 System.out.print("Ingrese el nuevo nombre (actual: " + hotel.getName() + "): ");
                 String name = scanner.nextLine();
-                System.out.print("Ingrese el nuevo ID del país (actual: " + hotel.getPais().getId() + "): ");
+
+                List<Pais> listPaises = hotelController.listPaises();
+                System.out.println("\n---------------------------------------------");
+                for (Pais pais : listPaises) {
+                    System.out.println(pais.getId() + " - Nombre: " + pais.getName());
+                    System.out.println("---------------------------------------------");
+                }
+                System.out.print("Ingrese el nuevo ID del país (actual: " + hotel.getPais().getName() + "): ");
                 int idPais = scanner.nextInt();
-                System.out.print("Ingrese el nuevo ID de la ciudad (actual: " + hotel.getCiudad().getId() + "): ");
+
+                Pais paisObject = null;
+                for (Pais pais : listPaises) {
+                    if (pais.getId() == idPais) {
+                        paisObject = pais;
+                        break;
+                    }
+                }
+
+                List<Ciudad> listCiudades = hotelController.listCiudades(idPais);
+                System.out.println("\n---------------------------------------------");
+                for (Ciudad ciudad : listCiudades) {
+                    System.out.println(ciudad.getId() + " - Nombre: " + ciudad.getName());
+                    System.out.println("---------------------------------------------");
+                }
+                System.out.print("Ingrese el nuevo ID de la ciudad (actual: " + hotel.getCiudad().getName() + "): ");
                 int idCiudad = scanner.nextInt();
+
+                Ciudad ciudadObject = null;
+                for (Ciudad ciudad : listCiudades) {
+                    if (ciudad.getId() == idCiudad) {
+                        ciudadObject = ciudad;
+                        break;
+                    }
+                }
+
                 System.out.print("Ingrese la nueva cantidad de estrellas (actual: " + hotel.getCantEstrella() + "): ");
                 int cantEstrella = scanner.nextInt();
-                scanner.nextLine();  // Consumir la nueva línea
+                scanner.nextLine(); // Consumir la nueva línea
                 System.out.print("Ingrese la nueva dirección (actual: " + hotel.getDireccion() + "): ");
                 String direccion = scanner.nextLine();
 
-                Pais pais = new PaisDAO(new ConnectionDAO()).getPaisById(idPais);
-                Ciudad ciudad = new CiudadDAO(new ConnectionDAO()).getCiudadById(idCiudad);
+                Hotel hotelFinal = new Hotel(idHotel, name, paisObject, ciudadObject, cantEstrella, direccion);
 
-                hotel.setName(name);
-                hotel.setPais(pais);
-                hotel.setCiudad(ciudad);
-                hotel.setCantEstrella(cantEstrella);
-                hotel.setDireccion(direccion);
-
-                if (hotelController.updateHotel(hotel)) {
+                if (hotelController.updateHotel(hotelFinal)) {
                     System.out.println("Hotel actualizado exitosamente.");
                 } else {
                     System.out.println("Error al actualizar el hotel.");
                 }
-
-
-
-            }else{
-                System.out.println("Hotel no encontrado.");
-                return;
+                break;
             }
         }
 
-    }*/
-
+        if (!hotelEncontrado) {
+            System.out.println("Hotel no encontrado.");
+        }
+    }
 
     public void deleteHotel() {
         System.out.print("Ingrese el ID del hotel a eliminar: ");
@@ -173,12 +193,13 @@ public class HotelView {
             System.out.println("No hay hoteles disponibles.");
         } else {
             // Imprime el encabezado de la tabla
+            System.out.println("\n\n");
             System.out.printf("%-5s | %-50s | %-10s | %-30s%n", " -", "Nombre", "Estrellas", "Dirección");
-            System.out.println("--------------------------------------------------------------");
+            System.out.println("-----------------------------------------------------------------------------------------------------");
 
             // Imprime cada hotel en formato de tabla
             for (Hotel hotel : hotels) {
-                System.out.printf("%-5d | %-60s | %-10d | %-30s%n",
+                System.out.printf("%-5d | %-50s | %-10d | %-30s%n",
                         hotel.getId(),
                         hotel.getName(),
                         hotel.getCantEstrella(),

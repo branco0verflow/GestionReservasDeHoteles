@@ -53,7 +53,6 @@ public class HuespedView {
     }
 
 
-
     private void insertHuesped(){
         System.out.print("Ingrese el nombre: ");
         String name = scanner.nextLine();
