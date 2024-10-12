@@ -1,18 +1,22 @@
 package org.example.controller;
 
 import org.example.DAO.HotelDAO;
+import org.example.DAO.HuespedDAO;
+import org.example.model.Ciudad;
 import org.example.model.Hotel;
+import org.example.model.Pais;
 
 import java.util.List;
 
 public class HotelController {
 
-    /*
+
 
     private HotelDAO hotelDAO;
 
-    public HotelController(HotelDAO hotelDAO) {
-        this.hotelDAO = hotelDAO;
+
+    public HotelController() {
+        this.hotelDAO = new HotelDAO();
     }
 
     public boolean addHotel(Hotel hotel) {
@@ -27,14 +31,19 @@ public class HotelController {
         return hotelDAO.deleteHotel(idHotel);
     }
 
-    public Hotel getHotelById(int idHotel) {
-        return hotelDAO.getHotelById(idHotel);
-    }
 
     public List<Hotel> getAllHotels() {
         return hotelDAO.getAllHotels();
     }
 
-    */
+    public List<Pais> listPaises(){
+        return this.hotelDAO.listPaises();
+    }
+
+    public List<Ciudad> listCiudades(int ciudad){
+        return this.hotelDAO.listCiudades(ciudad);
+    }
+
+
 }
 

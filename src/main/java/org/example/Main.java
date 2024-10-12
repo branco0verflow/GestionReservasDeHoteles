@@ -1,6 +1,7 @@
 package org.example;
 
 
+import org.example.view.HotelView;
 import org.example.view.HuespedView;
 
 import java.util.Scanner;
@@ -10,6 +11,12 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         HuespedView huespView;
+        HotelView hotelView;
+
+
+
+
+
         boolean salir = false;
         int opcion = -1;
         Scanner scanner = new Scanner(System.in);
@@ -32,7 +39,8 @@ public class Main {
                     huespView.manageHuesp();
                     break;
                 case 2:
-                    //listarDatos();
+                    hotelView = new HotelView(scanner);
+                    hotelView.manageHotel();
                     break;
                 case 3:
                     //listarDatos();

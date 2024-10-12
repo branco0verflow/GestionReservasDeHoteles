@@ -32,20 +32,29 @@ public class ConnectionDAO {
         return false;
     }
 
-    public ResultSet executeQuery(String query) {
+
+
+
+    public ResultSet executeQuery(String query, Object... params) {
         try {
             Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
 
-            // Ejecución de la consulta
-            ResultSet resultSet = statement.executeQuery();
+            for (int i = 0; i < params.length; i++) {
+                if (params[i] instanceof Integer) {
+                    statement.setInt(i + 1, (Integer) params[i]);
+                } else {
+                    statement.setObject(i + 1, params[i]);
+                }
+            }
 
-            return resultSet;
+            return statement.executeQuery();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
         return null;
     }
+
 }
 

@@ -36,4 +36,9 @@ public class Ciudad {
         this.name = name;
         this.pais = pais;
     }
+
+    public Ciudad(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

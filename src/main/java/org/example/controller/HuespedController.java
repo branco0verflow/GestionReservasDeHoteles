@@ -11,20 +11,16 @@ public class HuespedController {
 
     private HuespedDAO huespedDAO;
 
-    // Elimianr al huesped
-    public boolean deleteHuesped(int idHuesped) {
-        return this.huespedDAO.deleteHuesped(idHuesped);
-    }
 
+    public HuespedController() {
+        this.huespedDAO = new HuespedDAO();
+    }
 
     // metodo modificar huesped
     public boolean updateHuesped(Huesped huesped) {
         return this.huespedDAO.updateHuesped(huesped);
     }
 
-    public HuespedController() {
-        this.huespedDAO = new HuespedDAO();
-    }
 
     public boolean insertHuesped(Huesped huesp){
         return this.huespedDAO.insertHuesped(huesp);
@@ -32,6 +28,11 @@ public class HuespedController {
 
     public List<Huesped> listHuespedes(){
         return this.huespedDAO.listHuespedes();
+    }
+
+    // Elimianr al huesped
+    public boolean deleteHuesped(int idHuesped) {
+        return this.huespedDAO.deleteHuesped(idHuesped);
     }
 
     public List<Pais> listPaises(){
