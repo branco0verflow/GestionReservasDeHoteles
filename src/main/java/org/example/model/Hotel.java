@@ -74,4 +74,10 @@ public class Hotel {
         this.cantEstrella = cantEstrella;
         this.direccion = direccion;
     }
+
+    // Constructor parcial  - para usar en listados -
+    public Hotel(int id, String nombre) {
+        this.id = id;
+        this.name = nombre;
+    }
 }

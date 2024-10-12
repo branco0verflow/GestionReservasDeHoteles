@@ -4,15 +4,13 @@ public class Habitacion {
 
     private int id;
     private int cantCama;
-    private boolean camaMatrimonial;
-    private boolean reservado;
+    private boolean camaDoble;
     private boolean ocupado;
     private boolean aireAcon;
     private boolean balcon;
     private boolean amenities;
     private String vista;
-    private String tipoHabit;
-    private Tarifa tarifa;
+    private TipoHabit tipoHabit;
     private Hotel hotel;
 
     public int getId() {
@@ -31,20 +29,12 @@ public class Habitacion {
         this.cantCama = cantCama;
     }
 
-    public boolean isCamaMatrimonial() {
-        return camaMatrimonial;
+    public boolean isCamaDoble() {
+        return camaDoble;
     }
 
-    public void setCamaMatrimonial(boolean camaMatrimonial) {
-        this.camaMatrimonial = camaMatrimonial;
-    }
-
-    public boolean isReservado() {
-        return reservado;
-    }
-
-    public void setReservado(boolean reservado) {
-        this.reservado = reservado;
+    public void setCamaDoble(boolean camaDoble) {
+        this.camaDoble = camaDoble;
     }
 
     public boolean isOcupado() {
@@ -87,20 +77,12 @@ public class Habitacion {
         this.vista = vista;
     }
 
-    public String getTipoHabit() {
+    public TipoHabit getTipoHabit() {
         return tipoHabit;
     }
 
-    public void setTipoHabit(String tipoHabit) {
+    public void setTipoHabit(TipoHabit tipoHabit) {
         this.tipoHabit = tipoHabit;
-    }
-
-    public Tarifa getTarifa() {
-        return tarifa;
-    }
-
-    public void setTarifa(Tarifa tarifa) {
-        this.tarifa = tarifa;
     }
 
     public Hotel getHotel() {
@@ -111,18 +93,29 @@ public class Habitacion {
         this.hotel = hotel;
     }
 
-    public Habitacion(int id, int cantCama, boolean camaMatrimonial, boolean reservado, boolean ocupado, boolean aireAcon, boolean balcon, boolean amenities, String vista, String tipoHabit, Tarifa tarifa, Hotel hotel) {
+    public Habitacion(int id, int cantCama, boolean camaDoble, boolean ocupado, boolean aireAcon, boolean balcon, boolean amenities, String vista, TipoHabit tipoHabit, Hotel hotel) {
         this.id = id;
         this.cantCama = cantCama;
-        this.camaMatrimonial = camaMatrimonial;
-        this.reservado = reservado;
+        this.camaDoble = camaDoble;
         this.ocupado = ocupado;
         this.aireAcon = aireAcon;
         this.balcon = balcon;
         this.amenities = amenities;
         this.vista = vista;
         this.tipoHabit = tipoHabit;
-        this.tarifa = tarifa;
         this.hotel = hotel;
     }
+
+    public Habitacion(int cantCama, boolean camaDoble, boolean ocupado, boolean aireAcon, boolean balcon, boolean amenities, String vista, TipoHabit tipoHabit, Hotel hotel) {
+        this.cantCama = cantCama;
+        this.camaDoble = camaDoble;
+        this.ocupado = ocupado;
+        this.aireAcon = aireAcon;
+        this.balcon = balcon;
+        this.amenities = amenities;
+        this.vista = vista;
+        this.tipoHabit = tipoHabit;
+        this.hotel = hotel;
+    }
+
 }

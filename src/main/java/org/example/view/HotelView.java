@@ -106,6 +106,11 @@ public class HotelView {
         }
     }
 
+
+
+
+
+
     public void updateHotel() {
         System.out.print("Ingrese el ID del hotel a modificar: ");
         int idHotel = scanner.nextInt();

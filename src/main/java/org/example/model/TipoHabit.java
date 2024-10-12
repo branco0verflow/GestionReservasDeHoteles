@@ -1,11 +1,9 @@
 package org.example.model;
 
-import java.util.Date;
-
-public class Tarifa {
+public class TipoHabit {
     private int id;
     private String nombre;
-    private double precio;
+    private Tarifa idTarifa;
 
     public int getId() {
         return id;
@@ -23,17 +21,23 @@ public class Tarifa {
         this.nombre = nombre;
     }
 
-    public double getPrecio() {
-        return precio;
+    public Tarifa getIdTarifa() {
+        return idTarifa;
     }
 
-    public void setPrecio(double precio) {
-        this.precio = precio;
+    public void setIdTarifa(Tarifa idTarifa) {
+        this.idTarifa = idTarifa;
     }
 
-    public Tarifa(int id, String nombre, double precio) {
+    public TipoHabit(int id, String nombre, Tarifa idTarifa) {
         this.id = id;
         this.nombre = nombre;
-        this.precio = precio;
+        this.idTarifa = idTarifa;
     }
+
+    public TipoHabit(int id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+    }
+
 }

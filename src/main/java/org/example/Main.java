@@ -1,6 +1,7 @@
 package org.example;
 
 
+import org.example.view.HabitacionView;
 import org.example.view.HotelView;
 import org.example.view.HuespedView;
 
@@ -12,6 +13,7 @@ public class Main {
     public static void main(String[] args) {
         HuespedView huespView;
         HotelView hotelView;
+        HabitacionView habitView;
 
 
 
@@ -43,7 +45,8 @@ public class Main {
                     hotelView.manageHotel();
                     break;
                 case 3:
-                    //listarDatos();
+                    habitView = new HabitacionView(scanner);
+                    habitView.manageHabitacion();
                     break;
                 case 4:
                     //listarDatos();
