@@ -39,7 +39,7 @@ public class TarifaView {
                     updateTarifa();
                     break;
                 case 4:
-                    //deleteTarifa();
+                    deleteTarifa();
                     break;
                 case 0:
                     break;
@@ -67,7 +67,7 @@ public class TarifaView {
 
     }
 
-// Git 
+
     public void viewAllTarifas(){
 
         List<Tarifa> listTarifa = tarifaController.getAllTarifas();
@@ -121,6 +121,15 @@ public class TarifaView {
     }
 
     public void deleteTarifa(){
+        System.out.print("Ingrese el ID de la tarifa que quiere Eliminar: ");
+        int idEliminar = scanner.nextInt();
+
+        if(tarifaController.deleteTarifa(idEliminar)){
+            System.out.println("\n\nELIMINAR TARIFA SEGÚN ID\n");
+            System.out.println("Tarifa eliminada correctamente");
+        }else{
+            System.out.println("Ocurrió un error al eliminar la tarifa");
+        }
 
     }
 

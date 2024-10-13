@@ -5,12 +5,8 @@ import java.util.Date;
 public class Reserva {
     private int id;
     private int cantPersonas;
-    private Huesped huesped;
     private Habitacion habitacion;
-    private Date fechaInicio;
-    private Date fechaFin;
     private Date fechaReserva;
-    private String observaciones;
 
     public int getId() {
         return id;
@@ -28,36 +24,12 @@ public class Reserva {
         this.cantPersonas = cantPersonas;
     }
 
-    public Huesped getHuesped() {
-        return huesped;
-    }
-
-    public void setHuesped(Huesped huesped) {
-        this.huesped = huesped;
-    }
-
     public Habitacion getHabitacion() {
         return habitacion;
     }
 
     public void setHabitacion(Habitacion habitacion) {
         this.habitacion = habitacion;
-    }
-
-    public Date getFechaInicio() {
-        return fechaInicio;
-    }
-
-    public void setFechaInicio(Date fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-
-    public Date getFechaFin() {
-        return fechaFin;
-    }
-
-    public void setFechaFin(Date fechaFin) {
-        this.fechaFin = fechaFin;
     }
 
     public Date getFechaReserva() {
@@ -68,25 +40,17 @@ public class Reserva {
         this.fechaReserva = fechaReserva;
     }
 
-    public String getObservaciones() {
-        return observaciones;
-    }
-
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
-    }
-
-    public Reserva(int id, int cantPersonas, Huesped huesped, Habitacion habitacion, Date fechaInicio, Date fechaFin, Date fechaReserva, String observaciones) {
+    public Reserva(int id, int cantPersonas, Habitacion habitacion, Date fechaReserva) {
         this.id = id;
         this.cantPersonas = cantPersonas;
-        this.huesped = huesped;
         this.habitacion = habitacion;
-        this.fechaInicio = fechaInicio;
-        this.fechaFin = fechaFin;
         this.fechaReserva = fechaReserva;
-        this.observaciones = observaciones;
     }
 
-
+    public Reserva(int cantPersonas, Habitacion habitacion, Date fechaReserva) {
+        this.cantPersonas = cantPersonas;
+        this.habitacion = habitacion;
+        this.fechaReserva = fechaReserva;
+    }
 
 }
