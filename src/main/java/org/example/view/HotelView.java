@@ -199,7 +199,7 @@ public class HotelView {
         } else {
             // Imprime el encabezado de la tabla
             System.out.println("\n\n");
-            System.out.printf("%-5s | %-50s | %-10s | %-30s%n", " -", "Nombre", "Estrellas", "Dirección");
+            System.out.printf("%-5s | %-50s | %-10s | %-30s%n", "ID", "Nombre", "Estrellas", "Dirección");
             System.out.println("-----------------------------------------------------------------------------------------------------");
 
             // Imprime cada hotel en formato de tabla

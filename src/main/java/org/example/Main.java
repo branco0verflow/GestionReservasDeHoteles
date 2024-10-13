@@ -1,10 +1,7 @@
 package org.example;
 
 
-import org.example.view.HabitacionView;
-import org.example.view.HotelView;
-import org.example.view.HuespedView;
-import org.example.view.TarifaView;
+import org.example.view.*;
 
 import java.util.Scanner;
 
@@ -16,6 +13,7 @@ public class Main {
         HotelView hotelView;
         HabitacionView habitView;
         TarifaView tarifaView;
+        ReservaView reservaView;
 
 
 
@@ -55,7 +53,8 @@ public class Main {
                     tarifaView.manageTarifa();
                     break;
                 case 5:
-                    //listarDatos();
+                    reservaView = new ReservaView(scanner);
+                    reservaView.manageReserva();
                     break;
                 case 0:
                     salir = true;

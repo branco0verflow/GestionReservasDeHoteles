@@ -99,7 +99,7 @@ public class HabitacionDAO {
         return hotels;
     }
 
-    // Llamada a tipos de habitación existentes
+    // Llamada a tipo-Habitación existentes
     public List<TipoHabit> listTiposHabit() {
         String query = "SELECT th.idTipoHab, th.nombre, th.idTarifa, t.nombre, t.precio FROM tipoHabitacion th, tarifas t where th.idTarifa = t.idTarifa";
         List<TipoHabit> tipoHabList = new ArrayList<>();

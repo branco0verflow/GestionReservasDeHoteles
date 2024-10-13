@@ -118,4 +118,7 @@ public class Habitacion {
         this.hotel = hotel;
     }
 
+    public Habitacion(int id) {
+        this.id = id;
+    }
 }

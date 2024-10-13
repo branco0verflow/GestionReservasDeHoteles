@@ -111,6 +111,7 @@ public class Huesped {
         this.telefono = telefono;
     }
 
-
-
+    public Huesped(int id) {
+        this.id = id;
+    }
 }

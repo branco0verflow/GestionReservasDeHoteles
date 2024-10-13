@@ -5,7 +5,7 @@ import java.util.Date;
 public class Reserva {
     private int id;
     private int cantPersonas;
-    private Habitacion habitacion;
+    private Huesped huesped;
     private Date fechaReserva;
 
     public int getId() {
@@ -24,12 +24,12 @@ public class Reserva {
         this.cantPersonas = cantPersonas;
     }
 
-    public Habitacion getHabitacion() {
-        return habitacion;
+    public Huesped getHuesped() {
+        return huesped;
     }
 
-    public void setHabitacion(Habitacion habitacion) {
-        this.habitacion = habitacion;
+    public void setHuesped(Huesped huesped) {
+        this.huesped = huesped;
     }
 
     public Date getFechaReserva() {
@@ -40,17 +40,19 @@ public class Reserva {
         this.fechaReserva = fechaReserva;
     }
 
-    public Reserva(int id, int cantPersonas, Habitacion habitacion, Date fechaReserva) {
+    public Reserva(int id, int cantPersonas, Huesped huesped, Date fechaReserva) {
         this.id = id;
         this.cantPersonas = cantPersonas;
-        this.habitacion = habitacion;
+        this.huesped = huesped;
         this.fechaReserva = fechaReserva;
     }
 
-    public Reserva(int cantPersonas, Habitacion habitacion, Date fechaReserva) {
+    public Reserva(int cantPersonas, Huesped huesped) {
         this.cantPersonas = cantPersonas;
-        this.habitacion = habitacion;
-        this.fechaReserva = fechaReserva;
+        this.huesped = huesped;;
     }
 
+    public Reserva(int id) {
+        this.id = id;
+    }
 }
