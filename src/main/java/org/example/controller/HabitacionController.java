@@ -46,6 +46,9 @@ public class HabitacionController {
     }
 
 
+    public List<Tarifa> tarifaList(){
+        return this.habitlDAO.listTarifas();
+    }
 
 
 }

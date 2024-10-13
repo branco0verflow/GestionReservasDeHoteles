@@ -1,9 +1,11 @@
 package org.example.controller;
 
 import org.example.DAO.ReservaDAO;
+import org.example.model.Habitacion;
 import org.example.model.Huesped;
 import org.example.model.Reserva;
 
+import java.sql.Date;
 import java.util.List;
 
 public class ReservaController {
@@ -26,6 +28,10 @@ public class ReservaController {
 
     public List<Reserva> getAllReservas(){
         return reservaDAO.getAllReservas();
+    }
+
+    public List<Habitacion> habitacionesDisponiblesParams(int idCiudad, int tipoHab, String inicio, String fin){
+        return reservaDAO.habitacionesDisponibles(idCiudad, tipoHab, inicio, fin);
     }
 
     // Huespedes

@@ -1,9 +1,6 @@
 package org.example.DAO;
 
-import org.example.model.Huesped;
-import org.example.model.Pais;
-import org.example.model.Reserva;
-import org.example.model.TipoDoc;
+import org.example.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -125,6 +122,58 @@ public class ReservaDAO {
     public boolean insertHuesped(Huesped huesped){
         String query = "INSERT INTO huespedes (nombre, apaterno, amaterno, idTipoDoc, numDoc, fechaNac, idPais) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
         return connectionDAO.executeUpdate(query, huesped.getName(), huesped.getApaterno(), huesped.getAmaterno(), huesped.getTipoDoc().getId(), huesped.getNumDoc(), huesped.getFechaNac(), huesped.getPais().getId());
+    }
+
+
+
+
+
+
+
+
+    // Consultar Disponibilidad segun Fecha, Ciudad, tipo habitacion
+    public List<Habitacion> habitacionesDisponibles(int idCiudad, int tipoHab, String inicio, String fin){
+        String query = "SELECT hab.idHabitaciones, hab.cantCama, hab.camaDoble, hab.ocupado, hab.aireAcon, hab.balcon, hab.amenities, hab.vista," +
+                " hab.idTipoHab, th.nombre, h.idHotel, h.nombre FROM hoteles h " +
+                "JOIN habitaciones hab ON hab.idHotel = h.idHotel" +
+                "        JOIN tipohabitacion th ON th.idTipoHab = hab.idTipoHab" +
+                "        LEFT JOIN habitacionreserva hr ON hab.idHabitaciones = hr.idHabitacion" +
+                "        WHERE h.idCiudad = ?" +
+                "          AND th.idTipoHab = ?" +
+                "          AND hab.ocupado = false" +
+                "          AND (" +
+                "              hr.idHabitacionReserva IS NULL" +
+                "              OR NOT (" +
+                "                  (hr.fechaInicio <= ? AND hr.fechaFin >= ?)" +
+                "              )" +
+                "          );";
+        List<Habitacion> habitaciones = new ArrayList<>();
+
+        try {
+            ResultSet resultSet = connectionDAO.executeQuery(query, idCiudad, tipoHab, inicio, fin);
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                int cantCama = resultSet.getInt(2);
+                boolean camaDoble = resultSet.getBoolean(3);
+                boolean ocupado = resultSet.getBoolean(4);
+                boolean aireAcon = resultSet.getBoolean(5);
+                boolean balcon = resultSet.getBoolean(6);
+                boolean amenities = resultSet.getBoolean(7);
+                String vista = resultSet.getString(8);
+
+                TipoHabit tipoHabitacion = new TipoHabit(resultSet.getInt(9), resultSet.getString(10));
+                Hotel hotel = new Hotel(resultSet.getInt(11), resultSet.getString(12));
+
+                Habitacion habitacion = new Habitacion(id, cantCama, camaDoble, ocupado, aireAcon, balcon, amenities, vista, tipoHabitacion, hotel);
+
+                habitaciones.add(habitacion);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return habitaciones;
     }
 
 }

@@ -10,8 +10,9 @@ import java.util.List;
 public class HabitacionDAO {
     private ConnectionDAO connectionDAO;
 
-    public HabitacionDAO() {this.connectionDAO = new ConnectionDAO();}
-
+    public HabitacionDAO() {
+        this.connectionDAO = new ConnectionDAO();
+    }
 
 
     // Crear Habitacion
@@ -31,6 +32,7 @@ public class HabitacionDAO {
     // Eliminar Habitacion
     public boolean deleteHabitacion(int idHabit) {
         String query = "DELETE FROM habitaciones WHERE idHabitaciones = ?";
+
         return connectionDAO.executeUpdate(query, idHabit);
     }
 
@@ -72,7 +74,6 @@ public class HabitacionDAO {
 
         return habitaciones;
     }
-
 
 
     // LISTAR Hoteles
@@ -126,5 +127,33 @@ public class HabitacionDAO {
         return tipoHabList;
     }
 
+    // Listar Tarifas
+    public List<Tarifa> listTarifas() {
+
+        String query = "Select * from Tarifas";
+        List<Tarifa> tarifaslist = new ArrayList<>();
+
+        try {
+            ResultSet resultSet = connectionDAO.executeQuery(query);
+
+            while (resultSet.next()) {
+                int idTarifa = resultSet.getInt(1);
+                String tarifaName = resultSet.getString(2);
+                double tarifaPrecio = resultSet.getDouble(3);
+
+                Tarifa tarifaObject = new Tarifa(idTarifa, tarifaName, tarifaPrecio);
+
+
+                tarifaslist.add(tarifaObject);
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return tarifaslist;
+
+    }
 
 }
