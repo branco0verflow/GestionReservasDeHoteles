@@ -67,7 +67,7 @@ public class TarifaView {
 
     }
 
-
+// Git 
     public void viewAllTarifas(){
 
         List<Tarifa> listTarifa = tarifaController.getAllTarifas();
@@ -121,7 +121,7 @@ public class TarifaView {
     }
 
     public void deleteTarifa(){
-        
+
     }
 
 
