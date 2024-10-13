@@ -4,6 +4,7 @@ package org.example;
 import org.example.view.HabitacionView;
 import org.example.view.HotelView;
 import org.example.view.HuespedView;
+import org.example.view.TarifaView;
 
 import java.util.Scanner;
 
@@ -14,6 +15,7 @@ public class Main {
         HuespedView huespView;
         HotelView hotelView;
         HabitacionView habitView;
+        TarifaView tarifaView;
 
 
 
@@ -49,7 +51,8 @@ public class Main {
                     habitView.manageHabitacion();
                     break;
                 case 4:
-                    //listarDatos();
+                    tarifaView = new TarifaView(scanner);
+                    tarifaView.manageTarifa();
                     break;
                 case 5:
                     //listarDatos();

@@ -268,8 +268,7 @@ public class HabitacionView {
         }
     }
 
-
-
+    // Temporalmente en Deshuso Lista TODAS LAS HABITACIONES
     public void listarHabitaciones() {
         List<Hotel> listHotels = habitController.listHotels();
         List<Habitacion> habitacionesList = habitController.getAllHabit();

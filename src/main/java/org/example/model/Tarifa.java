@@ -36,4 +36,10 @@ public class Tarifa {
         this.nombre = nombre;
         this.precio = precio;
     }
+
+    public Tarifa(String nombre, double precio) {
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+
 }
