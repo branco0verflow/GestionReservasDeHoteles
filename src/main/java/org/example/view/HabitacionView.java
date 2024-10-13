@@ -7,6 +7,7 @@ import org.example.model.Habitacion;
 import org.example.model.Hotel;
 import org.example.model.TipoHabit;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,7 +24,7 @@ public class HabitacionView {
         do {
             System.out.println("\n\n\n----- Gestión de Habitaciones -----");
             System.out.println("1. Crear nueva Habitación");
-            System.out.println("2. Listar habitaciones");
+            System.out.println("2. Listar habitaciones según hotel");
             System.out.println("3. Modificar una habitación");
             System.out.println("4. Eliminar una habitación");
             System.out.println("0. Volver al menú principal");
@@ -36,13 +37,13 @@ public class HabitacionView {
                     addHabitacion();
                     break;
                 case 2:
-                    //viewAllHabitaciones();
+                    listarHabitacionesPorHotel();
                     break;
                 case 3:
                     updateHabitacion();
                     break;
                 case 4:
-                    //deleteHabitacion();
+                    deleteHabitacion();
                     break;
                 case 0:
                     break;
@@ -53,6 +54,7 @@ public class HabitacionView {
     }
 
 
+    // CRUD
 
     public void addHabitacion() {
 
@@ -144,7 +146,7 @@ public class HabitacionView {
                 for (Hotel hotel : hotelesList) {
                     System.out.println(hotel.getId() + " - " + hotel.getName());
                 }
-                System.out.print("Seleccione el nuevo hotel (actual: " + habitacion.getHotel().getName() + "): ");
+                System.out.print("Seleccione el nuevo hotel (Actual: "+ habitacion.getId()+ "- " + habitacion.getHotel().getName() + "): ");
                 int idHotel = scanner.nextInt();
                 scanner.nextLine(); // Consumir la nueva línea
 
@@ -215,40 +217,101 @@ public class HabitacionView {
         }
     }
 
-
-public void listarHabitaciones(){
-
-    List<Habitacion> habitacionesList = habitController.getAllHabit();
-
-    for(Habitacion habitacion : habitacionesList){
-
-        System.out.println(  Habitaciones );
+    public void listarHabitacionesPorHotel() {
+        System.out.println("\n\nTODOS LOS HOTELES\n");
+        List<Hotel> listHotels = habitController.listHotels();
+        for(Hotel hotel : listHotels){
+            System.out.println(hotel.getId() + "- " + hotel.getName());
+        }
 
 
+        System.out.print("\nSelecciona un hotel para ver sus habitaciones: ");
+        int idHotelSeleccionado = scanner.nextInt();
+
+        // Obtener el hotel correspondiente por su ID
+
+        Hotel hotelSeleccionado = listHotels.stream()
+                .filter(h -> h.getId() == idHotelSeleccionado)
+                .findFirst()
+                .orElse(null);
+
+        if (hotelSeleccionado == null) {
+            System.out.println("No se encontró un hotel con el ID proporcionado.");
+            return;
+        }
+
+        System.out.println("\n\n---------------------------------------------");
+        System.out.println("\nHOTEL: " + hotelSeleccionado.getName() + "\n");
+
+
+        // Filtrar habitaciones del hotel seleccionado
+        List<Habitacion> habitacionesList = habitController.getAllHabit();
+        List<Habitacion> habitacionesDelHotel = habitacionesList.stream()
+                .filter(h -> h.getHotel().getId() == idHotelSeleccionado)
+                .toList();
+
+        if (habitacionesDelHotel.isEmpty()) {
+            System.out.println("No hay habitaciones registradas para este hotel.");
+        } else {
+            habitacionesDelHotel.forEach(habitacion -> {
+                System.out.println("NÚMERO DE HABITACIÓN: " + habitacion.getId() +
+                        "\nTIPO: " + habitacion.getTipoHabit().getNombre());
+                System.out.println("Cantidad de camas: " + habitacion.getCantCama());
+                System.out.println("Cama Doble: " + (habitacion.isCamaDoble() ? "Sí" : "No"));
+                System.out.println("Estado actual: " + (habitacion.isOcupado() ? "Ocupado" : "Disponible"));
+                System.out.println("Tiene aire acondicionado: " + (habitacion.isAireAcon() ? "Sí" : "No"));
+                System.out.println("Tiene balcón: " + (habitacion.isBalcon() ? "Sí" : "No"));
+                System.out.println("Cuenta con amenities: " + (habitacion.isAmenities() ? "Sí" : "No"));
+                System.out.println("Tiene vista a: " + habitacion.getVista());
+                System.out.println("---------------------------------------------");
+            });
+        }
     }
 
 
-}
+
+    public void listarHabitaciones() {
+        List<Hotel> listHotels = habitController.listHotels();
+        List<Habitacion> habitacionesList = habitController.getAllHabit();
+
+        for (Hotel hotel : listHotels) {
+            System.out.println("---------------------------------------------");
+            System.out.println("\nHOTEL: " + hotel.getName() + "\n");
 
 
+            // Filtrar habitaciones del hotel actual
+            habitacionesList.stream()
+                    .filter(h -> h.getHotel().getId() == hotel.getId())
+                    .forEach(habitacion -> {
+                        System.out.println("NÚMERO DE HABITACIÓN: " + habitacion.getId() + "\nTIPO: " + habitacion.getTipoHabit().getNombre());
+                        System.out.println("\nCantidad de camas: " + habitacion.getCantCama());
+                        System.out.println("Cama Doble: " + (habitacion.isCamaDoble() ? "Sí" : "No"));
+                        System.out.println("Estado actual: " + (habitacion.isOcupado() ? "Ocupado" : "Disponible"));
+                        System.out.println("Tiene aire acondicionado: " + (habitacion.isAireAcon() ? "Sí" : "No"));
+                        System.out.println("Tiene balcón: " + (habitacion.isBalcon() ? "Sí" : "No"));
+                        System.out.println("Cuenta con amenities: " + (habitacion.isAmenities() ? "Sí" : "No"));
+                        System.out.println("Tiene vista a: " + habitacion.getVista());
+                        System.out.println("---------------------------------------------");
+                    });
 
 
+        }
+    }
 
 
+    public void deleteHabitacion() {
+        System.out.print("Ingrese el ID de la habitación a eliminar: ");
+        int id = scanner.nextInt();
+        scanner.nextLine(); // Limpiar buffer
+        if (habitController.deleteHabit(id)) {
+            System.out.println("Habitación eliminada correctamente.");
+        } else {
+            System.out.println("No se pudo eliminar la habitación.");
+        }
+    }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+    // Método convertir Bools en consola
     private boolean leerBoolean(String mensaje) {
         String input;
         do {

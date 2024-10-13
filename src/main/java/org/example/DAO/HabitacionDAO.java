@@ -23,7 +23,7 @@ public class HabitacionDAO {
 
     // Modificar Habitación
     public boolean updateHabitacion(Habitacion habitacion) {
-        String query = "UPDATE habitaciones SET cantCama = ?, camaDoble = ?, ocupado = ?, aireAcon = ?, balcon = ?, amenities = ?, vista = ?, idTipoHab = ?, idHotel = ? WHERE idHabitacion = ?";
+        String query = "UPDATE habitaciones SET cantCama = ?, camaDoble = ?, ocupado = ?, aireAcon = ?, balcon = ?, amenities = ?, vista = ?, idTipoHab = ?, idHotel = ? WHERE idHabitaciones = ?";
         return connectionDAO.executeUpdate(query, habitacion.getCantCama(), habitacion.isCamaDoble(), habitacion.isOcupado(), habitacion.isAireAcon(), habitacion.isBalcon(), habitacion.isAmenities(), habitacion.getVista(), habitacion.getTipoHabit().getId(), habitacion.getHotel().getId(), habitacion.getId()
         );
     }
@@ -37,12 +37,12 @@ public class HabitacionDAO {
 
     // LISTAR Habitaciones
     public List<Habitacion> getAllHabitaciones() {
-        String query = "SELECT h.idHabitacion, h.cantCama, h.camaDoble, h.ocupado, h.aireAcon, h.balcon, h.amenities, h.vista, " +
+        String query = "SELECT h.idHabitaciones, h.cantCama, h.camaDoble, h.ocupado, h.aireAcon, h.balcon, h.amenities, h.vista, " +
                 "th.idTipoHab, th.nombre AS tipoNombre, ho.idHotel, ho.nombre AS hotelNombre " +
                 "FROM habitaciones h " +
                 "JOIN tipoHabitacion th ON h.idTipoHab = th.idTipoHab " +
                 "JOIN hoteles ho ON h.idHotel = ho.idHotel " +
-                "ORDER BY h.idHabitacion ASC";
+                "ORDER BY h.idHabitaciones ASC";
 
         List<Habitacion> habitaciones = new ArrayList<>();
 
@@ -72,8 +72,6 @@ public class HabitacionDAO {
 
         return habitaciones;
     }
-
-
 
 
 
