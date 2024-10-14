@@ -24,7 +24,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         while (!salir) {
             limpiarConsola();
-            System.out.println("Menú Principal:\n");
+            System.out.println("\n\n\n    MENÚ PRINCIPAL:\n");
             System.out.println("1. Gestión de Huespedes");
             System.out.println("2. Gestión de Hoteles");
             System.out.println("3. Gestión de Habitaciones");

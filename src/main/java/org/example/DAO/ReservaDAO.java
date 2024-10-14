@@ -87,7 +87,6 @@ public class ReservaDAO {
     }
 
 
-
     // Listar huespedes
     public List<Huesped> listHuespedes(){
         String query = "select h.idHuesped, h.nombre, h.apaterno, h.amaterno, h.idTipoDoc, t.nombreTipo, h.numDoc, h.fechaNac, h.idPais, p.nombreP, h.telefono  from huespedes h, tipoDoc t, paises p Where h.idTipoDoc = t.idTipoDoc AND h.idPais = p.idPais ORDER BY h.idHuesped ASC";

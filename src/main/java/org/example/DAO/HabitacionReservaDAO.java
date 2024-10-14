@@ -13,8 +13,8 @@ import java.util.List;
 public class HabitacionReservaDAO {
     private ConnectionDAO connectionDAO;
 
-    public HabitacionReservaDAO(ConnectionDAO connectionDAO) {
-        this.connectionDAO = connectionDAO;
+    public HabitacionReservaDAO() {
+        this.connectionDAO = new ConnectionDAO();
     }
 
     // Crear HabitacionReserva

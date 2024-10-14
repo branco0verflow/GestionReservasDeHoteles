@@ -1,9 +1,6 @@
 package org.example.view;
 
-import org.example.controller.HabitacionController;
-import org.example.controller.HotelController;
-import org.example.controller.HuespedController;
-import org.example.controller.ReservaController;
+import org.example.controller.*;
 import org.example.model.*;
 
 import java.time.LocalDate;
@@ -21,6 +18,7 @@ public class ReservaView {
     private HuespedController huespedController;
     private HotelController hotelController;
     private HabitacionController habitacionController;
+    private HabitacionReservaController habitReservController;
     private Scanner scanner;
 
     public ReservaView(Scanner scanner) { this.reservaController = new ReservaController(); this.huespedController = new HuespedController(); this.hotelController = new HotelController(); this.habitacionController = new HabitacionController(); this.scanner = scanner;}
@@ -157,55 +155,195 @@ public class ReservaView {
                 scanner.nextLine();
 
 
+                // Comenzamos a mostrar habitaciones disponibles:
 
-            // Comenzamos a mostrar habitaciones disponibles:
+                List<Habitacion> habitacionesList = habitacionController.getAllHabit();
+                List<Habitacion> habitacionesDelHotel = habitacionesList.stream()
+                        .filter(h -> h.getHotel().getId() == idHotel)
+                        .toList();
 
-            List<Habitacion> habitacionesList = habitacionController.getAllHabit();
-            List<Habitacion> habitacionesDelHotel = habitacionesList.stream()
-                    .filter(h -> h.getHotel().getId() == idHotel)
-                    .toList();
+                if (habitacionesDelHotel.isEmpty()) {
+                    System.out.println("No hay habitaciones registradas para este hotel.");
+                } else {
+                    habitacionesDelHotel.forEach(habitacion -> {
+                        System.out.println("NÚMERO DE HABITACIÓN: " + habitacion.getId() +
+                                "\nTIPO: " + habitacion.getTipoHabit().getNombre());
+                        System.out.println("Cantidad de camas: " + habitacion.getCantCama());
+                        System.out.println("Cama Doble: " + (habitacion.isCamaDoble() ? "Sí" : "No"));
+                        System.out.println("Estado actual: " + (habitacion.isOcupado() ? "Ocupado" : "Disponible"));
+                        System.out.println("Tiene aire acondicionado: " + (habitacion.isAireAcon() ? "Sí" : "No"));
+                        System.out.println("Tiene balcón: " + (habitacion.isBalcon() ? "Sí" : "No"));
+                        System.out.println("Cuenta con amenities: " + (habitacion.isAmenities() ? "Sí" : "No"));
+                        System.out.println("Tiene vista a: " + habitacion.getVista());
+                        System.out.println("---------------------------------------------");
+                    });
+                }
 
-            if (habitacionesDelHotel.isEmpty()) {
-                System.out.println("No hay habitaciones registradas para este hotel.");
-            } else {
-                habitacionesDelHotel.forEach(habitacion -> {
-                    System.out.println("NÚMERO DE HABITACIÓN: " + habitacion.getId() +
-                            "\nTIPO: " + habitacion.getTipoHabit().getNombre());
-                    System.out.println("Cantidad de camas: " + habitacion.getCantCama());
-                    System.out.println("Cama Doble: " + (habitacion.isCamaDoble() ? "Sí" : "No"));
-                    System.out.println("Estado actual: " + (habitacion.isOcupado() ? "Ocupado" : "Disponible"));
-                    System.out.println("Tiene aire acondicionado: " + (habitacion.isAireAcon() ? "Sí" : "No"));
-                    System.out.println("Tiene balcón: " + (habitacion.isBalcon() ? "Sí" : "No"));
-                    System.out.println("Cuenta con amenities: " + (habitacion.isAmenities() ? "Sí" : "No"));
-                    System.out.println("Tiene vista a: " + habitacion.getVista());
-                    System.out.println("---------------------------------------------");
-                });
             }
-
-        }
 
 
             System.out.print("RESERVAR DESDE (YYYY-MM-DD): ");
-            String fechaInicioStr = scanner.nextLine();
+            String inicio = scanner.nextLine();
             System.out.print("RESERVAR HASTA (YYYY-MM-DD): ");
-            String fechaFinStr = scanner.nextLine();
+            String fin = scanner.nextLine();
 
 
-            // Define el formato de la fecha
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date inicio = null;
-            Date fin = null;
 
-            try {
-                fin = (Date) sdf.parse(fechaFinStr);
-                inicio = (Date) sdf.parse(fechaInicioStr);
-            } catch (ParseException e) {
-                System.out.println("Formato de fecha inválido. Por favor, usa el formato YYYY-MM-DD.");
-            }
-        } else {
-             System.out.println("Ocurrió un error al crear la reserva.");
+
         }
     }
+
+
+    private void exploreOptions2() {
+        Pais PaisObject = null;
+        Ciudad ciudadObject = null;
+
+        System.out.println("TIEMPO DE ESTADÍA\n");
+
+        System.out.print("RESERVAR DESDE (YYYY-MM-DD): ");
+        String inicio = scanner.nextLine();
+        System.out.print("RESERVAR HASTA (YYYY-MM-DD): ");
+        String fin = scanner.nextLine();
+
+        // Listar tipos de habitación
+        List<TipoHabit> listTipos = habitacionController.listTipoHabit();
+        System.out.println("\n\n   Tipos de Habitación ");
+        System.out.println("---------------------------------------------");
+        for (TipoHabit tipo : listTipos) {
+            System.out.println(tipo.getId() + "- " + tipo.getNombre());
+            System.out.println("---------------------------------------------");
+        }
+        System.out.print("Seleccione el tipo de habitación: ");
+        int idTipoHabit = scanner.nextInt();
+        scanner.nextLine();
+
+        TipoHabit tipoHabitacion = listTipos.stream()
+                .filter(tipo -> tipo.getId() == idTipoHabit)
+                .findFirst()
+                .orElse(null);
+
+        if (tipoHabitacion == null) {
+            System.out.println("Tipo de habitación no encontrado.");
+            return;
+        }
+
+        // Selección de país y ciudad
+        System.out.println("SELECCIONA DESTINO\n");
+        List<Pais> listPaisess = hotelController.listPaises();
+        System.out.println("---------------------------------------------");
+        for (Pais pais : listPaisess) {
+            System.out.println(pais.getId() + " -" + " Nombre: " + pais.getName());
+            System.out.println("---------------------------------------------");
+        }
+        System.out.print("Seleccione el país: ");
+        int idPais = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Pais paises : listPaisess) {
+            if (paises.getId() == idPais) {
+                PaisObject = paises;
+            }
+        }
+
+        List<Ciudad> listCiudadess = hotelController.listCiudades(idPais);
+        System.out.println("\n\n");
+        System.out.println("---------------------------------------------");
+        for (Ciudad pais : listCiudadess) {
+            System.out.println(pais.getId() + " -" + " Nombre: " + pais.getName());
+            System.out.println("---------------------------------------------");
+        }
+        System.out.print("Seleccione la ciudad: ");
+        int idCiudad = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Ciudad ciudades : listCiudadess) {
+            if (ciudades.getId() == idCiudad) {
+                ciudadObject = ciudades;
+            }
+        }
+
+        List<Habitacion> habitDisponiblesParams = reservaController.habitacionesDisponiblesParams(ciudadObject.getId(), tipoHabitacion.getId(), inicio, fin);
+
+        if (habitDisponiblesParams.isEmpty()) {
+            System.out.println("No hay habitaciones disponibles que cumplan los requisitos.");
+            return;
+        }
+
+        // Mostrar habitaciones disponibles
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate fechaInicio = LocalDate.parse(inicio, formatter);
+        LocalDate fechaFin = LocalDate.parse(fin, formatter);
+        long diasRestantes = ChronoUnit.DAYS.between(fechaInicio, fechaFin);
+
+        List<Tarifa> tarifaList = habitacionController.tarifaList();
+        Tarifa tarifa = tarifaList.stream().filter(t -> t.getId() == idTipoHabit).findFirst().orElse(null);
+
+        System.out.println("\n\nHABITACIONES DISPONIBLES ENCONTRADAS\n");
+        habitDisponiblesParams.forEach(habitacion -> {
+            System.out.println("ID: " + habitacion.getId());
+            System.out.println("TIPO: " + habitacion.getTipoHabit().getNombre());
+            System.out.println("Hotel: " + habitacion.getHotel().getName());
+            System.out.println("PRECIO TOTAL: U$D " + (diasRestantes * tarifa.getPrecio()));
+            System.out.println("---------------------------------------------");
+        });
+
+        // Seleccionar habitaciones para reservar
+        System.out.print("\nIngrese los IDs de las habitaciones a reservar (separados por comas): ");
+        String idsSeleccionados = scanner.nextLine();
+        String[] idsArray = idsSeleccionados.split(",");
+
+        System.out.print("Ingrese Número de Documento de Responsable: ");
+        int numDoc = scanner.nextInt();
+        scanner.nextLine();
+
+        List<Huesped> listaHuesp = reservaController.listHuesp();
+        Huesped responsable = listaHuesp.stream().filter(h -> h.getNumDoc() == numDoc).findFirst().orElse(null);
+
+        if (responsable == null) {
+            System.out.println("NO EXISTE un usuario registrado con ese número de documento.");
+            System.out.print("¿Desea crear un nuevo huésped? (s/n): ");
+            String respuesta = scanner.nextLine().trim().toLowerCase();
+            if (respuesta.equals("s")) {
+                insertHuesped();
+            } else {
+                System.out.println("Volver al menú principal.");
+                return;
+            }
+        }
+
+        System.out.print("Ingresa la cantidad de personas: ");
+        int cantPersonas = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("\nAgrega una observación: ");
+        String observacion = scanner.nextLine();
+
+        // Crear la reserva
+        Reserva reserva = new Reserva(cantPersonas, responsable);
+        if (reservaController.addReserva(reserva)) {
+            System.out.println("Reserva creada correctamente.");
+            for (String idHabitacionStr : idsArray) {
+                int idHabitacion = Integer.parseInt(idHabitacionStr.trim());
+
+                Habitacion habitacion = habitDisponiblesParams.stream()
+                        .filter(h -> h.getId() == idHabitacion)
+                        .findFirst()
+                        .orElse(null);
+
+                if (habitacion != null) {
+                    habitReservController.addHabitacionReserva(
+                            new HabitacionReserva(habitacion, inicio, fin, observacion, reserva)
+                    );
+                    System.out.println("Habitación " + idHabitacion + " reservada.");
+                } else {
+                    System.out.println("La habitación con ID " + idHabitacion + " no está disponible.");
+                }
+            }
+        } else {
+            System.out.println("Ocurrió un error al crear la reserva.");
+        }
+    }
+
 
 
     private void exploreOptions(){
@@ -315,10 +453,46 @@ public class ReservaView {
                 System.out.println("\n---------------------------------------------");
             });
 
+            // Aquí necesito que me ayudes:
+            //Creamos la reserva
+        System.out.print("\n 1- CREAR UNA RESERVA\n2- SEGUIR VIENDO\n\nElige una opción: ");
+        String option = scanner.nextLine();
 
+        if(option == "1"){
 
+            System.out.print("Ingrese Número de Documento de Responsable: ");
+            int numDoc = scanner.nextInt();
+            scanner.nextLine();
 
+            List<Huesped> listaHuesp = reservaController.listHuesp();
+            Huesped responsable = listaHuesp.stream().filter(h -> h.getNumDoc() == numDoc).findFirst().orElse(null);
 
+            if (responsable == null) {
+                System.out.println("NO EXISTE un usuario registrado con ese número de documento");
+                System.out.println("¿Desea crear un nuevo huésped? (s/n): ");
+                String respuesta = scanner.nextLine().trim().toLowerCase();
+
+                if (respuesta.equals("s")) {
+                    insertHuesped();
+                } else {
+                    System.out.println("Volver al menú principal.");
+                    return;
+                }
+            }
+
+            System.out.println("Responsable: " + responsable.getName() + " " + responsable.getApaterno() + "\n");
+            System.out.print("Ingresa la cantidad de personas: ");
+            int cantPersonas = scanner.nextInt();
+            scanner.nextLine();
+
+            Reserva reserva = new Reserva(cantPersonas, responsable);
+            if(reservaController.addReserva(reserva)){
+
+               // habitReservController.addHabitacionReserva()
+
+            }
+
+        }
 
 
     }
