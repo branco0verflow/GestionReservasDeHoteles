@@ -3,6 +3,7 @@ package org.example.view;
 import org.example.controller.*;
 import org.example.model.*;
 
+import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -21,7 +22,7 @@ public class ReservaView {
     private HabitacionReservaController habitReservController;
     private Scanner scanner;
 
-    public ReservaView(Scanner scanner) { this.reservaController = new ReservaController(); this.huespedController = new HuespedController(); this.hotelController = new HotelController(); this.habitacionController = new HabitacionController(); this.scanner = scanner;}
+    public ReservaView(Scanner scanner) { this.reservaController = new ReservaController(); this.huespedController = new HuespedController(); this.hotelController = new HotelController(); this.habitacionController = new HabitacionController(); this.habitReservController = new HabitacionReservaController(); this.scanner = scanner;}
 
     public void manageReserva() {
         int option = -1;
@@ -38,7 +39,7 @@ public class ReservaView {
 
             switch (option) {
                 case 1:
-                    exploreOptions();
+                    exploreOptions2();
                     break;
                 case 2:
                     //viewAllReservas();
@@ -318,6 +319,9 @@ public class ReservaView {
         System.out.println("\nAgrega una observación: ");
         String observacion = scanner.nextLine();
 
+        Date Finicio = new Date();
+        Date Ffin = new Date();
+
         // Crear la reserva
         Reserva reserva = new Reserva(cantPersonas, responsable);
         if (reservaController.addReserva(reserva)) {
@@ -331,9 +335,8 @@ public class ReservaView {
                         .orElse(null);
 
                 if (habitacion != null) {
-                    habitReservController.addHabitacionReserva(
-                            new HabitacionReserva(habitacion, inicio, fin, observacion, reserva)
-                    );
+                    HabitacionReserva habit = new HabitacionReserva(habitacion, Finicio, Ffin, observacion, reserva);
+                    habitReservController.addHabitacionReserva(habit);
                     System.out.println("Habitación " + idHabitacion + " reservada.");
                 } else {
                     System.out.println("La habitación con ID " + idHabitacion + " no está disponible.");
