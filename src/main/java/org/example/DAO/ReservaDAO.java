@@ -18,14 +18,24 @@ public class ReservaDAO {
         this.connectionDAO = new ConnectionDAO();
     }
 
-    // **Agregar Reserva**
+    /*Agregar Reserva**
     public boolean addReserva(Reserva reserva) {
         String query = "INSERT INTO reservas (cantPersonas, idHuesped) VALUES (?, ?)";
         return connectionDAO.executeUpdate(query,
                 reserva.getCantPersonas(),
                 reserva.getHuesped().getId()
         );
+    }*/
+
+    public int addReserva(Reserva reserva) {
+        String query = "INSERT INTO reservas (cantPersonas, idHuesped) VALUES (?, ?)";
+        return connectionDAO.executeUpdateAndReturnGeneratedKey(query,
+                reserva.getCantPersonas(),
+                reserva.getHuesped().getId()
+        );
     }
+
+
 
     // **Actualizar Reserva**
     public boolean updateReserva(Reserva reserva) {

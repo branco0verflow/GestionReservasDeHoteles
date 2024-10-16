@@ -56,5 +56,33 @@ public class ConnectionDAO {
         return null;
     }
 
+
+    public int executeUpdateAndReturnGeneratedKey(String query, Object... params) {
+        try (PreparedStatement stmt = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            for (int i = 0; i < params.length; i++) {
+                stmt.setObject(i + 1, params[i]); // Asigna los parámetros
+            }
+
+            int affectedRows = stmt.executeUpdate(); // Ejecuta la actualización
+
+            if (affectedRows == 0) {
+                throw new SQLException("No se pudo insertar la fila.");
+            }
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1); // Devuelve el ID generado
+                } else {
+                    throw new SQLException("No se pudo obtener el ID generado.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1; // Indica error
+        }
+    }
+
+
+
 }
 

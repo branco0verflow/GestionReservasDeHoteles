@@ -14,7 +14,7 @@ public class ReservaController {
 
     public ReservaController() { this.reservaDAO = new ReservaDAO();}
 
-    public boolean addReserva(Reserva reserva){
+    public int addReserva(Reserva reserva){
         return reservaDAO.addReserva(reserva);
     }
 

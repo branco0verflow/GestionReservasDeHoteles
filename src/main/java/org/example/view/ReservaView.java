@@ -58,7 +58,7 @@ public class ReservaView {
         } while (option != 0);
     }
 
-    private void addReserva() {
+   /* private void addReserva() {
         Pais PaisObject = null;
         Ciudad ciudadObject = null;
         Hotel hotelSeleccionado = null;
@@ -192,12 +192,13 @@ public class ReservaView {
 
 
         }
-    }
+    }*/
 
 
     private void exploreOptions2() {
         Pais PaisObject = null;
         Ciudad ciudadObject = null;
+        Hotel hotelSeleccionado = null;
 
         System.out.println("TIEMPO DE ESTADÍA\n");
 
@@ -263,7 +264,40 @@ public class ReservaView {
             }
         }
 
+
+        List<Hotel> hotels = hotelController.getAllHotels();
+        List<Hotel> hotelsFiltrados = hotels.stream().filter(h -> h.getCiudad().getId() == idCiudad).toList();
+
+        if (hotelsFiltrados.isEmpty()) {
+            System.out.println("No hay hoteles disponibles.");
+        } else {
+            // Imprime el encabezado de la tabla
+            System.out.println("\n\n");
+            System.out.printf("%-5s | %-50s | %-10s | %-30s%n", " -", "Nombre", "Estrellas", "Dirección");
+            System.out.println("-----------------------------------------------------------------------------------------------------");
+
+            // Imprime cada hotel en formato de tabla
+            for (Hotel hotel : hotelsFiltrados) {
+                System.out.printf("%-5d | %-50s | %-10d | %-30s%n",
+                        hotel.getId(),
+                        hotel.getName(),
+                        hotel.getCantEstrella(),
+                        hotel.getDireccion()
+                );
+            }
+        }
+
+            System.out.print("Selecciona un hotel para conocer su disponibilidad: ");
+            int idHotel = scanner.nextInt();
+            hotelSeleccionado = hotelsFiltrados.stream().filter(hotel -> hotel.getId() == idHotel).findFirst().orElse(null);
+            scanner.nextLine();
+
+
+            // Comenzamos a mostrar habitaciones disponibles:
+
         List<Habitacion> habitDisponiblesParams = reservaController.habitacionesDisponiblesParams(ciudadObject.getId(), tipoHabitacion.getId(), inicio, fin);
+        // Ahora filtramos el hotel seleccionado
+        List<Habitacion> habitacionesFiltradas = habitDisponiblesParams.stream().filter(h -> h.getHotel().getId() == idHotel).toList();
 
         if (habitDisponiblesParams.isEmpty()) {
             System.out.println("No hay habitaciones disponibles que cumplan los requisitos.");
@@ -271,27 +305,43 @@ public class ReservaView {
         }
 
         // Mostrar habitaciones disponibles
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate fechaInicio = LocalDate.parse(inicio, formatter);
-        LocalDate fechaFin = LocalDate.parse(fin, formatter);
-        long diasRestantes = ChronoUnit.DAYS.between(fechaInicio, fechaFin);
 
         List<Tarifa> tarifaList = habitacionController.tarifaList();
         Tarifa tarifa = tarifaList.stream().filter(t -> t.getId() == idTipoHabit).findFirst().orElse(null);
 
-        System.out.println("\n\nHABITACIONES DISPONIBLES ENCONTRADAS\n");
-        habitDisponiblesParams.forEach(habitacion -> {
-            System.out.println("ID: " + habitacion.getId());
-            System.out.println("TIPO: " + habitacion.getTipoHabit().getNombre());
-            System.out.println("Hotel: " + habitacion.getHotel().getName());
-            System.out.println("PRECIO TOTAL: U$D " + (diasRestantes * tarifa.getPrecio()));
-            System.out.println("---------------------------------------------");
-        });
+        // Mostrar habitaciones disponibles usando Date
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        Date fechaInicio;
+        Date fechaFin;
+
+        try {
+            // Parsear las fechas de inicio y fin
+            fechaInicio = formatter.parse(inicio);
+            fechaFin = formatter.parse(fin);
+
+            // Calcular los días restantes entre las dos fechas
+            long diasRestantes = (fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24);
+
+            // Listar habitaciones disponibles
+            System.out.println("\n\nHABITACIONES DISPONIBLES ENCONTRADAS\n");
+            habitacionesFiltradas.forEach(habitacion -> {
+                System.out.println("ID: " + habitacion.getId());
+                System.out.println("TIPO: " + habitacion.getTipoHabit().getNombre());
+                System.out.println("Hotel: " + habitacion.getHotel().getName());
+                System.out.println("PRECIO TOTAL: U$D " + (diasRestantes * tarifa.getPrecio()));
+                System.out.println("---------------------------------------------");
+            });
+
+        } catch (ParseException e) {
+            System.out.println("Error al interpretar las fechas. Asegúrate de usar el formato 'YYYY-MM-DD'.");
+            return;  // Salir si las fechas son inválidas
+        }
+
 
         // Seleccionar habitaciones para reservar
-        System.out.print("\nIngrese los IDs de las habitaciones a reservar (separados por comas): ");
-        String idsSeleccionados = scanner.nextLine();
-        String[] idsArray = idsSeleccionados.split(",");
+        System.out.print("\nCuantas habitaciones de tipo " + tipoHabitacion.getNombre() + " quieres reservar: ");
+        int cantidadHabitaciones = scanner.nextInt();
 
         System.out.print("Ingrese Número de Documento de Responsable: ");
         int numDoc = scanner.nextInt();
@@ -319,37 +369,45 @@ public class ReservaView {
         System.out.println("\nAgrega una observación: ");
         String observacion = scanner.nextLine();
 
-        Date Finicio = new Date();
-        Date Ffin = new Date();
 
         // Crear la reserva
         Reserva reserva = new Reserva(cantPersonas, responsable);
-        if (reservaController.addReserva(reserva)) {
-            System.out.println("Reserva creada correctamente.");
-            for (String idHabitacionStr : idsArray) {
-                int idHabitacion = Integer.parseInt(idHabitacionStr.trim());
+        int idReserva = reservaController.addReserva(reserva); // Obtiene el ID generado
 
-                Habitacion habitacion = habitDisponiblesParams.stream()
-                        .filter(h -> h.getId() == idHabitacion)
-                        .findFirst()
-                        .orElse(null);
+        if (idReserva != -1) {
+            reserva.setId(idReserva); // Asigna el ID al objeto reserva
+            System.out.println("Reserva creada correctamente con ID: " + idReserva);
 
-                if (habitacion != null) {
-                    HabitacionReserva habit = new HabitacionReserva(habitacion, Finicio, Ffin, observacion, reserva);
-                    habitReservController.addHabitacionReserva(habit);
-                    System.out.println("Habitación " + idHabitacion + " reservada.");
-                } else {
-                    System.out.println("La habitación con ID " + idHabitacion + " no está disponible.");
-                }
+            // Verificar si hay suficientes habitaciones disponibles
+            if (habitacionesFiltradas.size() < cantidadHabitaciones) {
+                System.out.println("Solo existen " + habitacionesFiltradas.size() + " habitaciones disponibles.");
+                return;  // Salir si no hay suficientes habitaciones
             }
+
+            // Asignar las habitaciones a la reserva
+            for (int i = 0; i < cantidadHabitaciones; i++) {
+                Habitacion habitacion = habitacionesFiltradas.get(i);
+
+
+                HabitacionReserva habitacionReserva = new HabitacionReserva(habitacion, fechaInicio, fechaFin, observacion, reserva);
+
+                habitReservController.addHabitacionReserva(habitacionReserva);  // Agregar la habitación a la reserva
+            }
+
+            System.out.println("Reserva completada con " + cantidadHabitaciones + " habitaciones.");
+
+
+
+
         } else {
             System.out.println("Ocurrió un error al crear la reserva.");
         }
+
     }
 
 
 
-    private void exploreOptions(){
+    /*private void exploreOptions(){
 
         Pais PaisObject = null;
         Ciudad ciudadObject = null;
@@ -498,7 +556,7 @@ public class ReservaView {
         }
 
 
-    }
+    }*/
 
 
     private void viewAllReservas() {
