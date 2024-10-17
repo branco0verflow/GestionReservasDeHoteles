@@ -4,6 +4,7 @@ import org.example.controller.*;
 import org.example.model.*;
 
 import java.text.DateFormat;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -196,9 +197,8 @@ public class ReservaView {
 
 
     private void exploreOptions2() {
-        Pais PaisObject = null;
+
         Ciudad ciudadObject = null;
-        Hotel hotelSeleccionado = null;
 
         System.out.println("TIEMPO DE ESTADÍA\n");
 
@@ -240,12 +240,6 @@ public class ReservaView {
         System.out.print("Seleccione el país: ");
         int idPais = scanner.nextInt();
         scanner.nextLine();
-
-        for (Pais paises : listPaisess) {
-            if (paises.getId() == idPais) {
-                PaisObject = paises;
-            }
-        }
 
         List<Ciudad> listCiudadess = hotelController.listCiudades(idPais);
         System.out.println("\n\n");
@@ -289,11 +283,10 @@ public class ReservaView {
 
             System.out.print("Selecciona un hotel para conocer su disponibilidad: ");
             int idHotel = scanner.nextInt();
-            hotelSeleccionado = hotelsFiltrados.stream().filter(hotel -> hotel.getId() == idHotel).findFirst().orElse(null);
             scanner.nextLine();
 
 
-            // Comenzamos a mostrar habitaciones disponibles:
+
 
         List<Habitacion> habitDisponiblesParams = reservaController.habitacionesDisponiblesParams(ciudadObject.getId(), tipoHabitacion.getId(), inicio, fin);
         // Ahora filtramos el hotel seleccionado
@@ -323,15 +316,23 @@ public class ReservaView {
             // Calcular los días restantes entre las dos fechas
             long diasRestantes = (fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24);
 
-            // Listar habitaciones disponibles
-            System.out.println("\n\nHABITACIONES DISPONIBLES ENCONTRADAS\n");
-            habitacionesFiltradas.forEach(habitacion -> {
-                System.out.println("ID: " + habitacion.getId());
-                System.out.println("TIPO: " + habitacion.getTipoHabit().getNombre());
-                System.out.println("Hotel: " + habitacion.getHotel().getName());
-                System.out.println("PRECIO TOTAL: U$D " + (diasRestantes * tarifa.getPrecio()));
-                System.out.println("---------------------------------------------");
-            });
+
+            if(habitacionesFiltradas.isEmpty()){
+                System.out.println("\n\nNO HAY HABITACIONES DISPONIBLES PARA ESTA FECHA\n\n");
+            }else{
+                // Listar habitaciones disponibles
+                System.out.println("\n\nHABITACIONES DISPONIBLES ENCONTRADAS\n");
+                habitacionesFiltradas.forEach(habitacion -> {
+                    System.out.println("ID: " + habitacion.getId());
+                    System.out.println("TIPO: " + habitacion.getTipoHabit().getNombre());
+                    System.out.println("Hotel: " + habitacion.getHotel().getName());
+                    System.out.println("\nESTADÍA POR " + diasRestantes + " DÍAS");
+                    System.out.println("PRECIO TOTAL: U$D " + (diasRestantes * tarifa.getPrecio()));
+                    System.out.println("---------------------------------------------");
+                });
+            }
+
+
 
         } catch (ParseException e) {
             System.out.println("Error al interpretar las fechas. Asegúrate de usar el formato 'YYYY-MM-DD'.");
@@ -340,27 +341,70 @@ public class ReservaView {
 
 
         // Seleccionar habitaciones para reservar
-        System.out.print("\nCuantas habitaciones de tipo " + tipoHabitacion.getNombre() + " quieres reservar: ");
-        int cantidadHabitaciones = scanner.nextInt();
+        int cantidadHabitaciones = 0;
+        boolean reservaValida = false;
 
-        System.out.print("Ingrese Número de Documento de Responsable: ");
-        int numDoc = scanner.nextInt();
-        scanner.nextLine();
+        while (!reservaValida) {
+            System.out.println("\nHay " + habitacionesFiltradas.size() + " disponibles\n");
+            System.out.print("\nCuantas habitaciones de tipo " + tipoHabitacion.getNombre() + " quieres reservar: ");
+            cantidadHabitaciones = scanner.nextInt();
 
-        List<Huesped> listaHuesp = reservaController.listHuesp();
-        Huesped responsable = listaHuesp.stream().filter(h -> h.getNumDoc() == numDoc).findFirst().orElse(null);
+            if(cantidadHabitaciones == 0){
+                System.out.println("Número no válido, ingrese un número válido");
+            }
 
-        if (responsable == null) {
-            System.out.println("NO EXISTE un usuario registrado con ese número de documento.");
-            System.out.print("¿Desea crear un nuevo huésped? (s/n): ");
-            String respuesta = scanner.nextLine().trim().toLowerCase();
-            if (respuesta.equals("s")) {
-                insertHuesped();
+            if (habitacionesFiltradas.size() < cantidadHabitaciones) {
+                System.out.println("Solo existen " + habitacionesFiltradas.size() + " habitaciones disponibles.");
+
+                System.out.print("¿Deseas ingresar otra cantidad? (S/N): ");
+                String respuesta = scanner.next();
+
+                if (respuesta.equalsIgnoreCase("N")) {
+                    System.out.println("Reserva cancelada.");
+                    return;
+                }
             } else {
-                System.out.println("Volver al menú principal.");
-                return;
+                reservaValida = true;
             }
         }
+
+
+        Huesped responsable = null;
+
+        while (responsable == null) {
+            System.out.print("Ingrese Número de Documento de Responsable: ");
+            int numDoc = scanner.nextInt();
+            scanner.nextLine();  // Limpiar buffer
+
+            // Buscar en la lista de huéspedes
+            List<Huesped> listaHuesp = reservaController.listHuesp();
+            responsable = listaHuesp.stream()
+                    .filter(h -> h.getNumDoc() == numDoc)
+                    .findFirst()
+                    .orElse(null);
+
+            if (responsable == null) {
+                System.out.println("NO EXISTE un usuario registrado con ese número de documento.");
+                System.out.print("¿Desea crear un nuevo huésped? (S/N): ");
+                String respuesta = scanner.nextLine().trim().toLowerCase();
+
+                if (respuesta.equals("s")) {
+                    insertHuesped();
+
+                    listaHuesp = reservaController.listHuesp();
+                    responsable = listaHuesp.stream()
+                            .filter(h -> h.getNumDoc() == numDoc)
+                            .findFirst()
+                            .orElse(null);
+                } else {
+                    System.out.println("Reserva cancelada. Volver al menú principal.");
+                    return;
+                }
+            }
+        }
+
+        System.out.println("Huésped responsable encontrado: " + responsable.getName());
+
 
         System.out.print("Ingresa la cantidad de personas: ");
         int cantPersonas = scanner.nextInt();
@@ -376,13 +420,7 @@ public class ReservaView {
 
         if (idReserva != -1) {
             reserva.setId(idReserva); // Asigna el ID al objeto reserva
-            System.out.println("Reserva creada correctamente con ID: " + idReserva);
-
-            // Verificar si hay suficientes habitaciones disponibles
-            if (habitacionesFiltradas.size() < cantidadHabitaciones) {
-                System.out.println("Solo existen " + habitacionesFiltradas.size() + " habitaciones disponibles.");
-                return;  // Salir si no hay suficientes habitaciones
-            }
+            System.out.println("\nReserva creada correctamente con ID: " + idReserva+"\n");
 
             // Asignar las habitaciones a la reserva
             for (int i = 0; i < cantidadHabitaciones; i++) {
@@ -394,7 +432,7 @@ public class ReservaView {
                 habitReservController.addHabitacionReserva(habitacionReserva);  // Agregar la habitación a la reserva
             }
 
-            System.out.println("Reserva completada con " + cantidadHabitaciones + " habitaciones.");
+            System.out.println("\nReserva completada con " + cantidadHabitaciones + " habitaciones.\n");
 
 
 
@@ -591,6 +629,7 @@ public class ReservaView {
         // }
     }
 
+
     private void insertHuesped(){
         System.out.print("Ingrese el nombre: ");
         String name = scanner.nextLine();
@@ -637,6 +676,7 @@ public class ReservaView {
 
         System.out.print("Seleccione el pais de nacimiento: ");
         int paisInt = scanner.nextInt();
+        scanner.nextLine();
 
         Pais PaisObject = null;
         for(Pais paises : listPaisess){
@@ -657,6 +697,7 @@ public class ReservaView {
         } else {
             System.out.println("Ocurrió un error al insertar el usuario");
         }
+
     }
 
 

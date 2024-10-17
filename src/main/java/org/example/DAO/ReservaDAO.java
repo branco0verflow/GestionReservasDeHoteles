@@ -141,21 +141,22 @@ public class ReservaDAO {
 
 
     // Consultar Disponibilidad segun Fecha, Ciudad, tipo habitacion
-    public List<Habitacion> habitacionesDisponibles(int idCiudad, int tipoHab, String inicio, String fin){
-        String query = "SELECT hab.idHabitaciones, hab.cantCama, hab.camaDoble, hab.ocupado, hab.aireAcon, hab.balcon, hab.amenities, hab.vista," +
-                " hab.idTipoHab, th.nombre, h.idHotel, h.nombre FROM hoteles h " +
-                "JOIN habitaciones hab ON hab.idHotel = h.idHotel" +
-                "        JOIN tipohabitacion th ON th.idTipoHab = hab.idTipoHab" +
-                "        LEFT JOIN habitacionreserva hr ON hab.idHabitaciones = hr.idHabitacion" +
-                "        WHERE h.idCiudad = ?" +
-                "          AND th.idTipoHab = ?" +
-                "          AND hab.ocupado = false" +
-                "          AND (" +
-                "              hr.idHabitacionReserva IS NULL" +
-                "              OR NOT (" +
-                "                  (hr.fechaInicio <= ? AND hr.fechaFin >= ?)" +
-                "              )" +
-                "          );";
+    public List<Habitacion> habitacionesDisponiblesParams(int idCiudad, int tipoHab, String inicio, String fin){
+        String query = "SELECT hab.idHabitaciones, hab.cantCama, hab.camaDoble, hab.ocupado, " +
+                "       hab.aireAcon, hab.balcon, hab.amenities, hab.vista, hab.idTipoHab, " +
+                "       th.nombre, h.idHotel, h.nombre " +
+                "FROM hoteles h " +
+                "JOIN habitaciones hab ON hab.idHotel = h.idHotel " +
+                "JOIN tipohabitacion th ON th.idTipoHab = hab.idTipoHab " +
+                "WHERE h.idCiudad = ? " +
+                "  AND th.idTipoHab = ? " +
+                "  AND hab.ocupado = false " +
+                "  AND NOT EXISTS (" +
+                "      SELECT 1 " +
+                "      FROM habitacionreserva hr " +
+                "      WHERE hr.idHabitacion = hab.idHabitaciones " +
+                "        AND ? < hr.fechaFin " +
+                "        AND ? > hr.fechaInicio);";
         List<Habitacion> habitaciones = new ArrayList<>();
 
         try {

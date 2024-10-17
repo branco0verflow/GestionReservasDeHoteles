@@ -5,7 +5,6 @@ import org.example.model.Habitacion;
 import org.example.model.Huesped;
 import org.example.model.Reserva;
 
-import java.sql.Date;
 import java.util.List;
 
 public class ReservaController {
@@ -31,7 +30,7 @@ public class ReservaController {
     }
 
     public List<Habitacion> habitacionesDisponiblesParams(int idCiudad, int tipoHab, String inicio, String fin){
-        return reservaDAO.habitacionesDisponibles(idCiudad, tipoHab, inicio, fin);
+        return reservaDAO.habitacionesDisponiblesParams(idCiudad, tipoHab, inicio, fin);
     }
 
     // Huespedes
