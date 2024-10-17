@@ -14,18 +14,18 @@ public class ReservaDAO {
         this.connectionDAO = connectionDAO;
     }
 
-    public ReservaDAO() {
-        this.connectionDAO = new ConnectionDAO();
-    }
+    public ReservaDAO() {this.connectionDAO = new ConnectionDAO();}
 
-    /*Agregar Reserva**
-    public boolean addReserva(Reserva reserva) {
-        String query = "INSERT INTO reservas (cantPersonas, idHuesped) VALUES (?, ?)";
-        return connectionDAO.executeUpdate(query,
-                reserva.getCantPersonas(),
-                reserva.getHuesped().getId()
-        );
-    }*/
+
+
+    //Crear una funcion para recuperar de la base de datos las habitaciones (idHabitaciones, )
+
+
+
+
+
+
+
 
     public int addReserva(Reserva reserva) {
         String query = "INSERT INTO reservas (cantPersonas, idHuesped) VALUES (?, ?)";
@@ -34,8 +34,6 @@ public class ReservaDAO {
                 reserva.getHuesped().getId()
         );
     }
-
-
 
     // **Actualizar Reserva**
     public boolean updateReserva(Reserva reserva) {
@@ -53,25 +51,6 @@ public class ReservaDAO {
         String query = "DELETE FROM reservas WHERE idReserva = ?";
         return connectionDAO.executeUpdate(query, idReserva);
     }
-
-    /* *Obtener una Reserva por ID**
-    public Reserva getReservaById(int idReserva) {
-        String query = "SELECT * FROM reservas WHERE idReserva = ?";
-        try {
-            ResultSet resultSet = connectionDAO.executeQuery(query, idReserva);
-            if (resultSet.next()) {
-                int cantPersonas = resultSet.getInt("cantPersonas");
-                int idHuesped = resultSet.getInt("idHuesped");
-                Date fechaReserva = resultSet.getDate("fechaReserva");
-
-                Huesped huesped = new Huesped(idHuesped);
-                return new Reserva(idReserva, cantPersonas, huesped, fechaReserva);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }*/
 
     // **Listar todas las Reservas**
     public List<Reserva> getAllReservas() {
@@ -95,7 +74,6 @@ public class ReservaDAO {
         }
         return reservas;
     }
-
 
     // Listar huespedes
     public List<Huesped> listHuespedes(){
@@ -132,13 +110,6 @@ public class ReservaDAO {
         String query = "INSERT INTO huespedes (nombre, apaterno, amaterno, idTipoDoc, numDoc, fechaNac, idPais) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
         return connectionDAO.executeUpdate(query, huesped.getName(), huesped.getApaterno(), huesped.getAmaterno(), huesped.getTipoDoc().getId(), huesped.getNumDoc(), huesped.getFechaNac(), huesped.getPais().getId());
     }
-
-
-
-
-
-
-
 
     // Consultar Disponibilidad segun Fecha, Ciudad, tipo habitacion
     public List<Habitacion> habitacionesDisponiblesParams(int idCiudad, int tipoHab, String inicio, String fin){
