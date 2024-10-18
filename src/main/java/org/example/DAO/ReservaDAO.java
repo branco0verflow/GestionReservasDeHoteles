@@ -20,7 +20,36 @@ public class ReservaDAO {
 
     //Crear una funcion para recuperar de la base de datos las habitaciones (idHabitaciones, )
 
+    public List<HabitacionReserva> HabitacionSegunIDHuesped(int idHuesped) {
+        String query = "SELECT hab.idHabitaciones, hab.ocupado, hab.vista, " +
+                "th.idTipoHab, th.nombre, hab.idHotel, h.nombre, " +
+                "r.idReserva, r.cantPersonas, r.fechaReserva " +
+                "FROM habitaciones hab " +
+                "INNER JOIN tipoHabitacion th ON hab.idTipoHab = th.idTipoHab " +
+                "INNER JOIN hoteles h ON hab.idHotel = h.idHotel " +
+                "INNER JOIN habitacionReserva hr ON hab.idHabitaciones = hr.idHabitacion " +
+                "INNER JOIN Reservas r ON r.idReserva = hr.idReserva " +
+                "WHERE r.idHuesped = ?";
 
+        List<HabitacionReserva> resultado = new ArrayList<>();
+
+        try (ResultSet rs = connectionDAO.executeQuery(query, idHuesped)) {
+            while (rs.next()) {
+                Habitacion habitacion = new Habitacion(rs.getInt("idHabitaciones"), rs.getBoolean("ocupado"), rs.getString("vista"),
+                        new TipoHabit(rs.getInt("idTipoHab"), rs.getString("nombre")),
+                        new Hotel(rs.getInt("idHotel"), rs.getString("nombre")));
+
+                Reserva reserva = new Reserva(rs.getInt("idReserva"), rs.getInt("cantPersonas"), rs.getDate("fechaReserva"));
+
+
+                resultado.add(new HabitacionReserva(habitacion, reserva));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return resultado;
+    }
 
 
 

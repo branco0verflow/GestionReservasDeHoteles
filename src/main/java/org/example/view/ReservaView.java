@@ -8,12 +8,9 @@ import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
+import java.util.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class ReservaView {
@@ -89,7 +86,10 @@ public class ReservaView {
             }
         }
 
+        List<HabitacionReserva> HabitacionesReservadas = new ArrayList<>();
+        HabitacionesReservadas= (List<HabitacionReserva>) reservaController.HabitacionReservadaSegunIdHuesped(responsable.getId());
 
+        
 
 
 

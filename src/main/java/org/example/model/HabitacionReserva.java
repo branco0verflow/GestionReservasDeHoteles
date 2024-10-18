@@ -74,4 +74,9 @@ public class HabitacionReserva {
         this.observaciones = observaciones;
         this.reserva = reserva;
     }
+
+    public HabitacionReserva(Habitacion habitacion, Reserva reserva){
+        this.habitacion = habitacion;
+        this.reserva = reserva;
+    }
 }

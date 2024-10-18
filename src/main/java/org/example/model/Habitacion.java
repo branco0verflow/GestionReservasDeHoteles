@@ -121,4 +121,13 @@ public class Habitacion {
     public Habitacion(int id) {
         this.id = id;
     }
+
+    public Habitacion(int id, boolean ocupado, String vista, TipoHabit tipoHabit, Hotel hotel){
+        this.id = id;
+        this.ocupado = ocupado;
+        this.vista = vista;
+        this.tipoHabit = tipoHabit;
+        this.hotel = hotel;
+    }
+
 }

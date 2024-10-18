@@ -2,6 +2,7 @@ package org.example.controller;
 
 import org.example.DAO.ReservaDAO;
 import org.example.model.Habitacion;
+import org.example.model.HabitacionReserva;
 import org.example.model.Huesped;
 import org.example.model.Reserva;
 
@@ -12,6 +13,11 @@ public class ReservaController {
     private ReservaDAO reservaDAO;
 
     public ReservaController() { this.reservaDAO = new ReservaDAO();}
+
+
+    public HabitacionReserva HabitacionReservadaSegunIdHuesped(int idHuesped){
+        return (HabitacionReserva) reservaDAO.HabitacionSegunIDHuesped(idHuesped);
+    }
 
     public int addReserva(Reserva reserva){
         return reservaDAO.addReserva(reserva);
