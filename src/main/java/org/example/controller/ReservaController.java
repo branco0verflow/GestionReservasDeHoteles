@@ -26,6 +26,10 @@ public class ReservaController {
         return  reservaDAO.listAllHabitResReserva(idHuesped);
     }
 
+    public List<HabitacionReserva> EncontrarReservasEntreFechas(String fechaIn, String fechaFin){
+        return  reservaDAO.EncontrarReservasEntreFechas(fechaIn, fechaFin);
+    }
+
     public List<Reserva> listAllReservas(int idHuesped){
         return  reservaDAO.listAllReserva(idHuesped);
     }

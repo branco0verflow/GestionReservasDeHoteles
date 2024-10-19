@@ -54,7 +54,7 @@ public class ReservaView {
                     deleteReserva();
                     break;
                 case 5:
-                    //filtrarHabitaciones();
+                    filtrarHabitaciones();
                     break;
                 case 6:
                     MarcarOcupadas();
@@ -77,15 +77,22 @@ public class ReservaView {
         System.out.print("Ingrese la fecha de fin (YYYY-MM-DD): ");
         String fechaFin = scanner.nextLine();
 
+        List<HabitacionReserva> habitacionesEncontradasList = reservaController.EncontrarReservasEntreFechas(fechaInicio, fechaFin);
 
-
-
-
-
-
-
-
-
+        if(habitacionesEncontradasList.isEmpty()){
+            System.out.println("\nNo se encontraron habitaciones reservadas para la fecha consultada\n");
+        }else{
+            for (HabitacionReserva reserva : habitacionesEncontradasList) {
+                System.out.println("\n----------------------------------");
+                System.out.println("Reserva creada el " + reserva.getReserva().getFechaReserva());
+                System.out.println("Habitación ID: " + reserva.getHabitacion().getId() + "\nDe tipo: " + reserva.getHabitacion().getTipoHabit().getNombre());
+                System.out.println("Con vista a " + reserva.getHabitacion().getVista());
+                System.out.println("Para " + reserva.getReserva().getCantPersonas() + " personas");
+                System.out.println("Hotel: " + reserva.getHabitacion().getHotel().getName());
+                System.out.println("Desde: " + reserva.getFechaInicio() + " Hatsa: " + reserva.getFechaFin());
+                System.out.println("----------------------------------");
+            }
+        }
 
 
     }

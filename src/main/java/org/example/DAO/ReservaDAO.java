@@ -17,16 +17,44 @@ public class ReservaDAO {
     public ReservaDAO() {this.connectionDAO = new ConnectionDAO();}
 
 
+    public List<HabitacionReserva> EncontrarReservasEntreFechas(String inicio, String fin){
+        String query = "SELECT r.idReserva, r.fechaReserva, r.cantPersonas, hr.fechaInicio, hr.fechaFin, " +
+                "hab.idHabitaciones, hab.ocupado, hab.vista, th.idTipoHab, th.nombre AS tipoNombre, " +
+                "ho.idHotel, ho.nombre AS hotelNombre " +
+                "FROM Reservas r " +
+                "INNER JOIN habitacionReserva hr ON r.idReserva = hr.idReserva " +
+                "INNER JOIN Habitaciones hab ON hr.idHabitacion = hab.idHabitaciones " +
+                "INNER JOIN tipoHabitacion th ON hab.idTipoHab = th.idTipoHab " +
+                "INNER JOIN Hoteles ho ON hab.idHotel = ho.idHotel " +
+                "WHERE hr.fechaInicio BETWEEN ? AND ?";
+
+        List<HabitacionReserva> habitaciones = new ArrayList<>();
+        try (ResultSet rs = connectionDAO.executeQuery(query, inicio, fin)) {
+            while (rs.next()) {
+                // Crear objetos necesarios
+                Hotel hotel = new Hotel(rs.getInt("idHotel"), rs.getString("hotelNombre"));
+                TipoHabit tipo = new TipoHabit(rs.getInt("idTipoHab"), rs.getString("tipoNombre"));
+                Habitacion habitacion = new Habitacion(rs.getInt("idHabitaciones"), rs.getBoolean("ocupado"),
+                        rs.getString("vista"), tipo, hotel);
+                Date fecahIn = rs.getDate("fechaInicio");
+                Date fechaFi = rs.getDate("fechaFin");
+                Reserva reserva = new Reserva(rs.getInt("idReserva"), rs.getInt("cantPersonas"), rs.getDate("fechaReserva"));
+                habitaciones.add(new HabitacionReserva(habitacion, fecahIn, fechaFi, reserva));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return habitaciones;
+    }
+
+
+
 
     public boolean updateHabitacionReserva(int idReserva, String fechaInicio, String fechaFin, String observacion) {
         String query = "UPDATE habitacionReserva SET fechaInicio = ?, fechaFin = ?, observaciones = ? " +
                 "WHERE idReserva = ?";
         return connectionDAO.executeUpdate(query, fechaInicio, fechaFin, observacion, idReserva);
     }
-
-
-
-
 
     public List<Reserva> listAllReserva(int numDoc) {
         String query = "SELECT r.idReserva, r.cantPersonas, r.fechaReserva, r.observacion, h.idHuesped, h.nombre " +
