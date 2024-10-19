@@ -57,7 +57,7 @@ public class ReservaDAO {
     }
 
     public List<Reserva> listAllReserva(int numDoc) {
-        String query = "SELECT r.idReserva, r.cantPersonas, r.fechaReserva, r.observacion, h.idHuesped, h.nombre " +
+        String query = "SELECT r.idReserva, r.cantPersonas, r.fechaReserva, h.idHuesped, h.nombre " +
                 "FROM Reservas r " +
                 "INNER JOIN Huespedes h ON r.idHuesped = h.idHuesped " +
                 "WHERE h.numDoc = ?";

@@ -6,6 +6,8 @@ import org.example.model.Huesped;
 import org.example.model.Pais;
 import org.example.model.TipoDoc;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -84,8 +86,18 @@ public class HuespedView {
         int numDoc = scanner.nextInt();
         scanner.nextLine();
 
-        System.out.print("Ingrese su fecha de nacimiento YYYY-MM--DD: ");
-        String fechaNac = scanner.nextLine();
+        String fechaNac = "";
+        boolean fechaValida = false;
+        while (!fechaValida) {
+            System.out.print("Ingrese su fecha de nacimiento (YYYY-MM-DD) o 0 para salir: ");
+            fechaNac = scanner.nextLine();
+            if (fechaNac.equals("0")) return;
+
+            fechaValida = validarFecha(fechaNac);
+            if (!fechaValida) {
+                System.out.println("Fecha inválida. Intente de nuevo.");
+            }
+        }
 
 
         List<Pais> listPaisess = huespedController.listPaises();
@@ -183,8 +195,18 @@ public class HuespedView {
             int numDoc = scanner.nextInt();
             scanner.nextLine();
 
-            System.out.print("Ingrese su fecha de nacimiento YYYY-MM--DD: ");
-            String fechaNac = scanner.nextLine();
+        String fechaNac = "";
+        boolean fechaValida = false;
+        while (!fechaValida) {
+            System.out.print("Ingrese su fecha de nacimiento (YYYY-MM-DD) o 0 para salir: ");
+            fechaNac = scanner.nextLine();
+            if (fechaNac.equals("0")) return;
+
+            fechaValida = validarFecha(fechaNac);
+            if (!fechaValida) {
+                System.out.println("Fecha inválida. Intente de nuevo.");
+            }
+        }
 
 
             List<Pais> listPaisess = huespedController.listPaises();
@@ -220,6 +242,16 @@ public class HuespedView {
             }
 
 
+    }
+
+
+    private boolean validarFecha(String fecha) {
+        try {
+            LocalDate.parse(fecha);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
 
 }

@@ -42,7 +42,7 @@ public class ReservaView {
 
             switch (option) {
                 case 1:
-                    CreateReserva();
+                    addReserva();
                     break;
                 case 2:
                     ListAllHabitReservas();
@@ -217,35 +217,44 @@ public class ReservaView {
 
     }
 
-    private void CreateReserva() {
-
+    private void addReserva() {
         Ciudad ciudadObject = null;
-
         System.out.println("TIEMPO DE ESTADÍA\n");
 
-        System.out.print("RESERVAR DESDE (YYYY-MM-DD): ");
-        String inicio = scanner.nextLine();
-        System.out.print("RESERVAR HASTA (YYYY-MM-DD): ");
-        String fin = scanner.nextLine();
-
+        Date fechaInicio = null;
+        Date fechaFin = null;
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date fechaInicio;
-        Date fechaFin;
+        formatter.setLenient(false);
 
-        try {
-            fechaInicio = formatter.parse(inicio);
-            fechaFin = formatter.parse(fin);
+        String inicio;
+        String fin;
 
-            if (fechaInicio.after(fechaFin)) {
-                System.out.println("La fecha de inicio no puede ser mayor o igual a la fecha de fin.");
-                return;
+        while (true) {
+            try {
+                System.out.print("RESERVAR DESDE (YYYY-MM-DD): ");
+                inicio = scanner.nextLine();
+                fechaInicio = formatter.parse(inicio);
+
+                if (fechaInicio.before(new Date())) {
+                    System.out.println("La fecha de inicio no puede ser en el pasado. Intente de nuevo.");
+                    continue;
+                }
+
+                System.out.print("RESERVAR HASTA (YYYY-MM-DD): ");
+                fin = scanner.nextLine();
+                fechaFin = formatter.parse(fin);
+
+                if (!fechaInicio.before(fechaFin)) {
+                    System.out.println("La fecha de inicio debe ser menor a la fecha de fin. Intente de nuevo.");
+                    continue;
+                }
+                break; // Fechas válidas, salir del bucle
+            } catch (ParseException e) {
+                System.out.println("Formato de fecha inválido. Use 'YYYY-MM-DD'.");
             }
-        } catch (ParseException e) {
-            System.out.println("Error al interpretar las fechas. Asegúrate de usar el formato 'YYYY-MM-DD'.");
-            return;
         }
 
-         long diasRestantes = (fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24);
+        long diasRestantes = (fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24);
 
         // Listar tipos de habitación
         List<TipoHabit> listTipos = habitacionController.listTipoHabit();
@@ -255,6 +264,7 @@ public class ReservaView {
             System.out.println(tipo.getId() + "- " + tipo.getNombre());
             System.out.println("---------------------------------------------");
         }
+
         System.out.print("Seleccione el tipo de habitación: ");
         int idTipoHabit = scanner.nextInt();
         scanner.nextLine();
@@ -439,8 +449,13 @@ public class ReservaView {
         String observacion = scanner.nextLine();
 
 
-        System.out.println("\n\nCONFIRMA LOS DATOS");
-        System.out.println();
+        System.out.println("\n\nDATOS DE LA RESERVA\n");
+        System.out.println("Responsable: " + responsable.getName() + " " + responsable.getAmaterno());
+        System.out.println("Para " + cantPersonas + " personas");
+        System.out.println(cantidadHabitaciones + " habitaciones de " + "tipo " + tipoHabitacion.getNombre());
+        System.out.println("\nESTADÍA POR " + diasRestantes + " DÍAS");
+        System.out.println("Desde " + inicio + " Hasta " + fin);
+        System.out.println("PRECIO TOTAL: U$D " + (diasRestantes * tarifa.getPrecio()));
 
 
         // Crear la reserva
