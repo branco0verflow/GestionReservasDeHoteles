@@ -79,4 +79,12 @@ public class HabitacionReserva {
         this.habitacion = habitacion;
         this.reserva = reserva;
     }
+
+    public HabitacionReserva(Habitacion habitacion, Date fechaI, Date fechaF, Reserva reserva){
+        this.habitacion = habitacion;
+        this.reserva = reserva;
+        this.fechaInicio = fechaI;
+        this.fechaFin = fechaF;
+    }
+
 }

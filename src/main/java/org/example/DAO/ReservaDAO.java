@@ -18,7 +18,70 @@ public class ReservaDAO {
 
 
 
-    //Crear una funcion para recuperar de la base de datos las habitaciones (idHabitaciones, )
+    public boolean updateHabitacionReserva(int idReserva, String fechaInicio, String fechaFin, String observacion) {
+        String query = "UPDATE habitacionReserva SET fechaInicio = ?, fechaFin = ?, observaciones = ? " +
+                "WHERE idReserva = ?";
+        return connectionDAO.executeUpdate(query, fechaInicio, fechaFin, observacion, idReserva);
+    }
+
+
+
+
+
+    public List<Reserva> listAllReserva(int numDoc) {
+        String query = "SELECT r.idReserva, r.cantPersonas, r.fechaReserva, r.observacion, h.idHuesped, h.nombre " +
+                "FROM Reservas r " +
+                "INNER JOIN Huespedes h ON r.idHuesped = h.idHuesped " +
+                "WHERE h.numDoc = ?";
+
+        List<Reserva> reservas = new ArrayList<>();
+        try (ResultSet rs = connectionDAO.executeQuery(query, numDoc)) {
+
+            while (rs.next()) {
+                Reserva reserva = new Reserva(
+                        rs.getInt("idReserva"),
+                        rs.getInt("cantPersonas"),
+                        rs.getDate("fechaReserva"),
+                        new Huesped(rs.getInt("idHuesped"), rs.getString("nombre"))
+                );
+                reservas.add(reserva);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reservas;
+    }
+
+    public List<HabitacionReserva> listAllHabitResReserva(int numDoc) {
+        String query = "SELECT r.idReserva, r.cantPersonas, r.fechaReserva, " +
+                "h.idHuesped, h.nombre, hab.idHabitaciones, hab.ocupado, hab.vista, hr.fechaInicio, hr.fechaFin, " +
+                "th.idTipoHab, th.nombre AS tipoNombre, ho.idHotel, ho.nombre AS hotelNombre " +
+                "FROM Reservas r " +
+                "INNER JOIN Huespedes h ON r.idHuesped = h.idHuesped " +
+                "INNER JOIN habitacionReserva hr ON r.idReserva = hr.idReserva " +
+                "INNER JOIN Habitaciones hab ON hr.idHabitacion = hab.idHabitaciones " +
+                "INNER JOIN tipoHabitacion th ON hab.idTipoHab = th.idTipoHab " +
+                "INNER JOIN Hoteles ho ON hab.idHotel = ho.idHotel " +
+                "WHERE h.numDoc = ?";
+
+        List<HabitacionReserva> reservas = new ArrayList<>();
+        try (ResultSet rs = connectionDAO.executeQuery(query, numDoc)) {
+            while (rs.next()) {
+                // Crear objetos necesarios
+                Hotel hotel = new Hotel(rs.getInt("idHotel"), rs.getString("hotelNombre"));
+                TipoHabit tipo = new TipoHabit(rs.getInt("idTipoHab"), rs.getString("tipoNombre"));
+                Habitacion habitacion = new Habitacion(rs.getInt("idHabitaciones"), rs.getBoolean("ocupado"),
+                        rs.getString("vista"), tipo, hotel);
+                Date fecahIn = rs.getDate("fechaInicio");
+                Date fechaFi = rs.getDate("fechaFin");
+                Reserva reserva = new Reserva(rs.getInt("idReserva"), rs.getInt("cantPersonas"), rs.getDate("fechaReserva"));
+                reservas.add(new HabitacionReserva(habitacion, fecahIn, fechaFi, reserva));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reservas;
+    }
 
     public List<HabitacionReserva> HabitacionSegunIDHuesped(int idHuesped) {
         String query = "SELECT hab.idHabitaciones, hab.ocupado, hab.vista, " +
@@ -38,7 +101,6 @@ public class ReservaDAO {
                 Habitacion habitacion = new Habitacion(rs.getInt("idHabitaciones"), rs.getBoolean("ocupado"), rs.getString("vista"),
                         new TipoHabit(rs.getInt("idTipoHab"), rs.getString("nombre")),
                         new Hotel(rs.getInt("idHotel"), rs.getString("nombre")));
-
                 Reserva reserva = new Reserva(rs.getInt("idReserva"), rs.getInt("cantPersonas"), rs.getDate("fechaReserva"));
 
 
@@ -51,10 +113,15 @@ public class ReservaDAO {
         return resultado;
     }
 
+    public boolean updateHabitacionToOcupada(int idHabitacion) {
+        String query = "UPDATE Habitaciones SET ocupado = 1 WHERE idHabitaciones = ?";
+            return connectionDAO.executeUpdate(query, idHabitacion);
+    }
 
-
-
-
+    public boolean updateHabitacionToDESOcupada(int idHabitacion) {
+        String query = "UPDATE Habitaciones SET ocupado = 0 WHERE idHabitaciones = ?";
+        return connectionDAO.executeUpdate(query, idHabitacion);
+    }
 
     public int addReserva(Reserva reserva) {
         String query = "INSERT INTO reservas (cantPersonas, idHuesped) VALUES (?, ?)";

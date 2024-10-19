@@ -114,4 +114,10 @@ public class Huesped {
     public Huesped(int id) {
         this.id = id;
     }
+
+    public Huesped(int id, String nombre) {
+        this.id = id;
+        this.name = nombre;
+    }
+
 }

@@ -47,6 +47,13 @@ public class Reserva {
         this.fechaReserva = fechaReserva;
     }
 
+    public Reserva(int id, int cantPersonas, Date fechaReserva, Huesped huesped) {
+        this.id = id;
+        this.cantPersonas = cantPersonas;
+        this.fechaReserva = fechaReserva;
+        this.huesped = huesped;
+    }
+
     public Reserva(int id, int cantPersonas, Date fechaReserva) {
         this.id = id;
         this.cantPersonas = cantPersonas;

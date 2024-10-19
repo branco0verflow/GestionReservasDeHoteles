@@ -2,29 +2,22 @@ package org.example;
 
 
 import org.example.view.*;
-
-import java.text.ParseException;
 import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
         HuespedView huespView;
         HotelView hotelView;
         HabitacionView habitView;
         TarifaView tarifaView;
         ReservaView reservaView;
 
-
-
-
-
         boolean salir = false;
         int opcion = -1;
         Scanner scanner = new Scanner(System.in);
         while (!salir) {
-            limpiarConsola();
             System.out.println("\n\n\n    MENÚ PRINCIPAL:\n");
             System.out.println("1. Gestión de Huespedes");
             System.out.println("2. Gestión de Hoteles");
@@ -37,7 +30,6 @@ public class Main {
             opcion = scanner.nextInt();
             switch (opcion) {
                 case 1:
-                    limpiarConsola();
                     huespView = new HuespedView(scanner);
                     huespView.manageHuesp();
                     break;
@@ -70,11 +62,4 @@ public class Main {
     }
 
 
-
-
-
-    private static void limpiarConsola() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
 }

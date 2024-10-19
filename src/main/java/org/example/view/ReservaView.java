@@ -1,17 +1,9 @@
 package org.example.view;
-
 import org.example.controller.*;
 import org.example.model.*;
-
-import java.text.DateFormat;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.stream.Collectors;
 
 public class ReservaView {
     private ReservaController reservaController;
@@ -38,7 +30,10 @@ public class ReservaView {
             System.out.println("2. Listar reservas");
             System.out.println("3. Modificar reserva");
             System.out.println("4. Eliminar reserva según ID");
-            System.out.println("5. Marcar reserva como ocupada");
+
+            System.out.println("\nCHECK IN - CHECK OUT");
+            System.out.println("5. Marcar habitación como ocupada");
+            System.out.println("6. Marcar habitación como desocupada");
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
             option = scanner.nextInt();
@@ -49,16 +44,19 @@ public class ReservaView {
                     CreateReserva();
                     break;
                 case 2:
-                    //viewAllReservas();
+                    ListAllHabitReservas();
                     break;
                 case 3:
-                    //updateReserva();
+                    updateHabitacionReserva();
                     break;
                 case 4:
-                    //deleteReserva();
+                    deleteReserva();
                     break;
                 case 5:
                     MarcarOcupadas();
+                    break;
+                case 6:
+                    MarcarDESOcupadas();
                     break;
                 case 0:
                     break;
@@ -70,8 +68,12 @@ public class ReservaView {
 
 
 
-    private void MarcarOcupadas(){
-        System.out.println("\n\nREGISTRAR HABITACIÓN COMO OCUPADA\n");
+
+
+    private void MarcarDESOcupadas() {
+        boolean salir = false;
+
+        System.out.println("\n\nDESOCUPAR HABITACIÓN\n");
         Huesped responsable = null;
 
         while (responsable == null) {
@@ -86,21 +88,106 @@ public class ReservaView {
             }
         }
 
-        List<HabitacionReserva> HabitacionesReservadas = new ArrayList<>();
-        HabitacionesReservadas= (List<HabitacionReserva>) reservaController.HabitacionReservadaSegunIdHuesped(responsable.getId());
+        while (!salir) {
+            List<HabitacionReserva> HabitacionesReservadas = reservaController.HabitacionReservadaSegunIdHuesped(responsable.getId());
 
-        
+            System.out.println("---------------------------------------------");
+            System.out.println("RESPONSABLE: " + responsable.getName() + "\n");
+
+            for (HabitacionReserva habRes : HabitacionesReservadas) {
+                System.out.println("FECHA DE RESERVA: " + habRes.getReserva().getFechaReserva());
+                System.out.println("Habitación Asignada: " + habRes.getHabitacion().getId() +
+                        "\nHOTEL: " + habRes.getHabitacion().getHotel().getName());
+                System.out.println("Tipo de habitación: " + habRes.getHabitacion().getTipoHabit().getNombre());
+                System.out.println("Actualmente: " + (habRes.getHabitacion().isOcupado() ? "Ocupada" : "Desocupada"));
+                System.out.println("\n-----------------------------------------");
+            }
+
+            System.out.print("\nIngrese la habitación que quiera marcar como desocupada: ");
+            int habOcupada = scanner.nextInt();
+            scanner.nextLine();
+
+            boolean UpdateDESOcupada = reservaController.UpdateHabitacionToDESOcupada(habOcupada);
+
+            if (UpdateDESOcupada) {
+                System.out.println("\nLa habitación se marcó como desocupada\n");
+            } else {
+                System.out.println("Ocurrió un error al marcar esta habitación como desocupada");
+            }
+
+            System.out.println("\n0. Volver a gestión de Reservas");
+            System.out.println("1. Realizar otra operación");
+            String opcion = scanner.nextLine();
+
+            if (opcion.equals("0")) {
+                salir = true;
+            }
+        }
+    }
+
+    private void MarcarOcupadas(){
+        boolean salir = false;
+
+            System.out.println("\n\nREGISTRAR HABITACIÓN COMO OCUPADA\n");
+            Huesped responsable = null;
+
+            while (responsable == null) {
+                System.out.print("Ingrese Número de Documento de huesped: ");
+                int numDoc = scanner.nextInt();
+                scanner.nextLine();
+                List<Huesped> listaHuesp = reservaController.listHuesp();
+                responsable = listaHuesp.stream().filter(h -> h.getNumDoc() == numDoc).findFirst().orElse(null);
+                if (responsable == null) {
+                    System.out.println("NO EXISTE un usuario registrado con ese número de documento.");
+                    return;
+                }
+            }
+
+        while (!salir){
+
+            List<HabitacionReserva> HabitacionesReservadas = new ArrayList<>();
+            HabitacionesReservadas= reservaController.HabitacionReservadaSegunIdHuesped(responsable.getId());
+
+            System.out.println("---------------------------------------------");
+            System.out.println("RESPONSABLE: " + responsable.getName() + "\n");
+
+            for(HabitacionReserva habRes : HabitacionesReservadas){
+
+                System.out.println("FECHA DE RESERVA: " + habRes.getReserva().getFechaReserva());
+                System.out.println("Habitacion Asignada: " + habRes.getHabitacion().getId() +"\n"+  " HOTEL: " + habRes.getHabitacion().getHotel().getName() + "\n");
+                System.out.println("Tipo de habitación: " + habRes.getHabitacion().getTipoHabit().getNombre());
+                System.out.println("Actualmente: " + (habRes.getHabitacion().isOcupado() ? "Ocupada" : "Desocupada"));
+                System.out.println("\n-----------------------------------------");
+            }
+
+            System.out.print("\nIngrese la habitación que quiera marcar como ocupada: ");
+            int habOcupada = scanner.nextInt();
+            scanner.nextLine();
+
+            boolean UpdateOcupada = reservaController.UpdateHabitacionToOcupada(habOcupada);
+
+            if (UpdateOcupada){
+                System.out.println("\nLa habitación se marcó como ocupada\n");
+            }else{
+                System.out.println("Ocurrió un error al marcar esta habitación como ocupada");
+            }
+
+            System.out.println("\n0. Volver a gestión de Reservas");
+            System.out.println("1. Realizar otra operación");
+            String opcion = scanner.nextLine();
+
+            if (opcion.equals("0")){
+                salir = true;
+            }
+
+        }
+
+
 
 
 
 
     }
-
-
-
-
-
-
 
     private void CreateReserva() {
 
@@ -355,39 +442,142 @@ public class ReservaView {
 
     }
 
+    private void ListAllHabitReservas() {
+        Huesped responsable = null;
+        System.out.println("\nRESERVAS HECHAS POR CLIENTES: \n\n");
 
-    private void viewAllReservas() {
-        // Aquí puedes implementar la lógica para listar todas las reservas
-        // List<Reserva> reservas = reservaController.getAllReservas();
-        // for (Reserva reserva : reservas) {
-        //     System.out.println(reserva); // Personaliza la forma en que deseas mostrar la reserva
-        // }
+        while (responsable == null) {
+            System.out.print("Ingrese Número de Documento de el responsable: ");
+            int numDoc = scanner.nextInt();
+            scanner.nextLine();
+            List<Huesped> listaHuesp = reservaController.listHuesp();
+            responsable = listaHuesp.stream().filter(h -> h.getNumDoc() == numDoc).findFirst().orElse(null);
+            if (responsable == null) {
+                System.out.println("NO EXISTE un usuario registrado con ese número de documento.");
+                return;
+            }
+        }
+
+        System.out.println("---------------------------------------------");
+        System.out.println("RESPONSABLE: " + responsable.getName() + " "+ responsable.getApaterno() +"\n");
+
+        List<HabitacionReserva> reservas = reservaController.listAllHabitReserva(responsable.getNumDoc());
+        for (HabitacionReserva reserva : reservas) {
+            System.out.println("Reserva ID: " + reserva.getReserva().getId() + "\nCreada el " + reserva.getReserva().getFechaReserva());
+            System.out.println("Habitación ID: " + reserva.getHabitacion().getId() + "\nDe tipo: " + reserva.getHabitacion().getTipoHabit().getNombre());
+            System.out.println("Para " + reserva.getReserva().getCantPersonas() + " personas");
+            System.out.println("Hotel: " + reserva.getHabitacion().getHotel().getName());
+            System.out.println("Desde: " + reserva.getFechaInicio() + " Hatsa: " + reserva.getFechaFin());
+            System.out.println("----------------------------------");
+        }
+
+
     }
 
-    private void updateReserva() {
-        // Aquí puedes implementar la lógica para actualizar una reserva
-        // System.out.print("Ingresa el ID de la reserva a modificar: ");
-        // int idReserva = scanner.nextInt();
-        // Aquí debes obtener los nuevos datos y luego actualizar
-        // if (reservaController.updateReserva(reserva)) {
-        //     System.out.println("Reserva actualizada correctamente.");
-        // } else {
-        //     System.out.println("Ocurrió un error al actualizar la reserva.");
-        // }
+    private void updateHabitacionReserva() {
+
+        Huesped responsable = null;
+        System.out.println("\nRESERVAS HECHAS POR CLIENTES: \n\n");
+
+        while (responsable == null) {
+            System.out.print("Ingrese Número de Documento de el responsable: ");
+            int numDoc = scanner.nextInt();
+            scanner.nextLine();
+            List<Huesped> listaHuesp = reservaController.listHuesp();
+            responsable = listaHuesp.stream().filter(h -> h.getNumDoc() == numDoc).findFirst().orElse(null);
+            if (responsable == null) {
+                System.out.println("NO EXISTE un usuario registrado con ese número de documento.");
+                return;
+            }
+        }
+
+        System.out.println("---------------------------------------------");
+        System.out.println("RESPONSABLE: " + responsable.getName() + " "+ responsable.getApaterno() +"\n");
+
+        List<HabitacionReserva> reservas = reservaController.listAllHabitReserva(responsable.getNumDoc());
+        for (HabitacionReserva reserva : reservas) {
+            System.out.println("Reserva ID: " + reserva.getReserva().getId() + "\nCreada el " + reserva.getReserva().getFechaReserva());
+            System.out.println("Habitación ID: " + reserva.getHabitacion().getId() + "\nDe tipo: " + reserva.getHabitacion().getTipoHabit().getNombre());
+            System.out.println("Para " + reserva.getReserva().getCantPersonas() + " personas");
+            System.out.println("Hotel: " + reserva.getHabitacion().getHotel().getName());
+            System.out.println("Desde: " + reserva.getFechaInicio() + " Hatsa: " + reserva.getFechaFin());
+            System.out.println("----------------------------------");
+        }
+
+
+        System.out.print("Ingrese el ID de la reserva a modificar: ");
+        int idReserva = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Nueva fecha de inicio (YYYY-MM-DD): ");
+        String inicio = scanner.nextLine();
+        System.out.print("Nueva fecha de fin (YYYY-MM-DD): ");
+        String fin = scanner.nextLine();
+        System.out.print("Nueva observación: ");
+        String observacion = scanner.nextLine();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date fechaInicio = formatter.parse(inicio);
+            Date fechaFin = formatter.parse(fin);
+
+            if (fechaInicio.after(fechaFin)) {
+                System.out.println("La fecha de inicio no puede ser mayor que la fecha de fin.");
+                return;
+            }
+
+            boolean actualizado = reservaController.updateHabitacionReserva(idReserva, inicio, fin, observacion);
+
+            if (actualizado) {
+                System.out.println("\nReserva actualizada correctamente.");
+            } else {
+                System.out.println("Error al actualizar la reserva.");
+            }
+        } catch (ParseException e) {
+            System.out.println("Error al interpretar las fechas. Asegúrate de usar el formato 'YYYY-MM-DD'.");
+        }
+
     }
 
     private void deleteReserva() {
-        // Aquí puedes implementar la lógica para eliminar una reserva
+
+        Huesped responsable = null;
+        System.out.println("\nCANCELAR RESERVAS\n\n");
+
+        while (responsable == null) {
+            System.out.print("Ingrese Número de Documento de el responsable: ");
+            int numDoc = scanner.nextInt();
+            scanner.nextLine();
+            List<Huesped> listaHuesp = reservaController.listHuesp();
+            responsable = listaHuesp.stream().filter(h -> h.getNumDoc() == numDoc).findFirst().orElse(null);
+            if (responsable == null) {
+                System.out.println("NO EXISTE un usuario registrado con ese número de documento.");
+                return;
+            }
+        }
+
+        System.out.println("---------------------------------------------");
+        System.out.println("RESPONSABLE: " + responsable.getName() + " "+ responsable.getApaterno() +"\n");
+
+        List<Reserva> reservas = reservaController.listAllReservas(responsable.getNumDoc());
+        for (Reserva reserva : reservas) {
+            System.out.println("Reserva ID: " + reserva.getId());
+            System.out.println("Cantidad de Personas: " + reserva.getCantPersonas());
+            System.out.println("Fecha: " + reserva.getFechaReserva());
+            System.out.println("Responsable: " + reserva.getHuesped().getName());
+            System.out.println("----------------------------------");
+        }
+
         System.out.print("Ingresa el ID de la reserva a eliminar: ");
         int idReserva = scanner.nextInt();
-        scanner.nextLine(); // Limpiar el buffer
-        // if (reservaController.deleteReserva(idReserva)) {
-        //     System.out.println("Reserva eliminada correctamente.");
-        // } else {
-        //     System.out.println("Ocurrió un error al eliminar la reserva.");
-        // }
-    }
+        scanner.nextLine();
 
+        if (reservaController.deleteReserva(idReserva)) {
+            System.out.println("Reserva cancelada correctamente.");
+        } else {
+            System.out.println("Error al cancelar la reserva.");
+        }
+    }
 
     private void insertHuesped() {
         System.out.print("Ingrese el nombre: ");

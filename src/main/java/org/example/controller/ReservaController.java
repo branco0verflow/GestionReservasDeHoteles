@@ -14,9 +14,28 @@ public class ReservaController {
 
     public ReservaController() { this.reservaDAO = new ReservaDAO();}
 
+    public boolean UpdateHabitacionToOcupada(int idHabit){
+        return reservaDAO.updateHabitacionToOcupada(idHabit);
+    }
 
-    public HabitacionReserva HabitacionReservadaSegunIdHuesped(int idHuesped){
-        return (HabitacionReserva) reservaDAO.HabitacionSegunIDHuesped(idHuesped);
+    public boolean UpdateHabitacionToDESOcupada(int idHabit){
+        return reservaDAO.updateHabitacionToDESOcupada(idHabit);
+    }
+
+    public List<HabitacionReserva> listAllHabitReserva(int idHuesped){
+        return  reservaDAO.listAllHabitResReserva(idHuesped);
+    }
+
+    public List<Reserva> listAllReservas(int idHuesped){
+        return  reservaDAO.listAllReserva(idHuesped);
+    }
+
+    public boolean updateHabitacionReserva(int idReserva, String fechaInicio, String fecgaFin, String observa){
+        return reservaDAO.updateHabitacionReserva(idReserva, fechaInicio, fecgaFin, observa);
+    }
+
+    public List<HabitacionReserva> HabitacionReservadaSegunIdHuesped(int idHuesped){
+        return  reservaDAO.HabitacionSegunIDHuesped(idHuesped);
     }
 
     public int addReserva(Reserva reserva){

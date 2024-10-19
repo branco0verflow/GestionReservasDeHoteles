@@ -1,20 +1,24 @@
 package org.example.view;
 
+import org.example.controller.HabitacionController;
 import org.example.controller.HotelController;
 import org.example.model.Ciudad;
+import org.example.model.Habitacion;
 import org.example.model.Hotel;
 import org.example.model.Pais;
 
 import java.util.Scanner;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HotelView {
 
     private HotelController hotelController;
+    private HabitacionController habitController;
     private Scanner scanner;
 
 
-    public HotelView(Scanner scanner) { this.hotelController = new HotelController(); this.scanner = scanner;}
+    public HotelView(Scanner scanner) { this.hotelController = new HotelController(); this.scanner = scanner; this.habitController = new HabitacionController();}
 
     public void manageHotel() {
         int option = -1;
@@ -23,7 +27,10 @@ public class HotelView {
             System.out.println("1. Crear nuevo Hotel");
             System.out.println("2. Listar hoteles");
             System.out.println("3. Modificar un hoteles");
-            System.out.println("4. Eliminar un hotel");
+            System.out.println("4. Eliminar un hotel\n");
+
+            System.out.println("5. Ver habitaciones ocupadas");
+            System.out.println("6. Filtrar hoteles");
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
             option = scanner.nextInt();
@@ -42,6 +49,12 @@ public class HotelView {
                 case 4:
                     deleteHotel();
                     break;
+                case 5:
+                    verHabitacionesOcupadas();
+                    break;
+                case 6:
+                    filtrarHoteles();
+                    break;
                 case 0:
                     break;
                 default:
@@ -49,6 +62,97 @@ public class HotelView {
             }
         } while (option != 0);
     }
+
+
+    public void filtrarHoteles(){
+            Scanner scanner = new Scanner(System.in);
+
+            boolean continuar = true;
+            while (continuar) {
+                System.out.println("\n\nENCUENTRA HOTELES\n");
+                System.out.println("1. Filtrar por nombre");
+                System.out.println("2. Filtrar por ciudad");
+                System.out.println("3. Filtrar por cantidad de estrellas");
+                System.out.println("4. Aplicar filtros y mostrar resultados");
+                System.out.println("5. Salir");
+                System.out.print("\nSeleccione una opción: ");
+                int opcion = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (opcion) {
+                    case 1:
+                        System.out.print("Ingrese el nombre del hotel: ");
+                        String name = scanner.nextLine();
+
+                        List<Hotel> hotelesList = hotelController.getAllHotels();
+                        List<Hotel> hoteles = hotelesList.stream()
+                                .filter(h -> h.getName().toLowerCase().contains(name.toLowerCase()))
+                                .collect(Collectors.toList());
+
+                        if (hoteles.isEmpty()) {
+                            System.out.println("\nNo se encontraron hoteles con ese nombre.\n");
+                        } else {
+                            System.out.println("\nHoteles encontrados:\n");
+                            hoteles.forEach(h -> System.out.println(h.getName()));
+                        }
+                        break;
+
+                    case 2:
+                        System.out.print("Ingrese la ciudad del hotel: ");
+                        String ciudad = scanner.nextLine();
+                        break;
+
+                    case 3:
+                        System.out.print("Ingrese la cantidad de estrellas: ");
+                        int estrellas = scanner.nextInt();
+                        scanner.nextLine();
+                        break;
+
+                    case 4:
+                        System.out.println("\n\nBUSCAR HOTELES SEGÚN CIUDAD - NOMBRE - CANTIDAD DE ESTRELLAS\n");
+                        System.out.print("Ingrese el nombre del hotel: ");
+                        String nombre = scanner.nextLine();
+                        System.out.print("Ingrese la ciudad del hotel: ");
+                        ciudad = scanner.nextLine();
+                        System.out.print("Ingrese la cantidad de estrellas: ");
+                        estrellas = scanner.nextInt();
+                        List<Hotel> resultados = buscarHoteles(nombre, ciudad, estrellas);
+                        if (resultados.isEmpty()) {
+                            System.out.println("No se encontraron hoteles con esos criterios.");
+                        } else {
+                            System.out.println("\nHoteles encontrados:\n");
+                            resultados.forEach(h -> System.out.println(
+                                    h.getName() + " - " + h.getCiudad().getName() + " - " + h.getCantEstrella() + " estrellas"
+                            ));
+                        }
+                        break;
+
+                    case 5:
+                        System.out.println("Saliendo del menú...");
+                        continuar = false;
+                        break;
+
+                    default:
+                        System.out.println("Opción inválida. Intente de nuevo.");
+                }
+            }
+        }
+
+    public List<Hotel> buscarHoteles(String nombre, String ciudad, Integer cantEstrella) {
+        List<Hotel> hotelesList = hotelController.getAllHotels();
+        return hotelesList.stream()
+                .filter(h -> (nombre == null || h.getName().toLowerCase().contains(nombre.toLowerCase())))
+                .filter(h -> (ciudad == null || h.getCiudad().getName().toLowerCase().equals(ciudad.toLowerCase())))
+                .filter(h -> (cantEstrella == null || h.getCantEstrella() == cantEstrella))
+                .toList();
+    }
+
+
+
+
+
+
+
 
     public void addHotel() {
         System.out.print("Ingrese el nombre del hotel: ");
@@ -105,11 +209,6 @@ public class HotelView {
             System.out.println("Error al agregar el hotel.");
         }
     }
-
-
-
-
-
 
     public void updateHotel() {
         System.out.print("Ingrese el ID del hotel a modificar: ");
@@ -192,6 +291,72 @@ public class HotelView {
         }
     }
 
+    public void verHabitacionesOcupadas(){
+        List<Hotel> hotels = hotelController.getAllHotels();
+        Hotel hotelSeleccionado = null;
+
+        System.out.println("\n\nHABITACIONES OCUPADAS\n");
+        if (hotels.isEmpty()) {
+            System.out.println("\nNo hay hoteles disponibles.");
+            return;
+        } else {
+            // Imprime el encabezado de la tabla
+            System.out.println("\n\n");
+            System.out.printf("%-5s | %-50s | %-10s | %-30s%n", "ID", "Nombre", "Estrellas", "Dirección");
+            System.out.println("-----------------------------------------------------------------------------------------------------");
+
+            // Imprime cada hotel en formato de tabla
+            for (Hotel hotel : hotels) {
+                System.out.printf("%-5d | %-50s | %-10d | %-30s%n",
+                        hotel.getId(),
+                        hotel.getName(),
+                        hotel.getCantEstrella(),
+                        hotel.getDireccion()
+                );
+            }
+        }
+
+        boolean salir = false;
+      while (!salir){
+          System.out.print("\n\nSeleccione un hotel: ");
+          int idHoel = scanner.nextInt();
+          scanner.nextLine();
+
+          hotelSeleccionado = hotels.stream().filter(h -> h.getId() == idHoel).findFirst().orElse(null);
+          if(hotelSeleccionado == null){
+              System.out.println("\nHotel no encontrado\n");
+              return;
+          }else{
+              salir = true;
+          }
+      }
+        List<Habitacion> habitacionesList = habitController.getAllHabit();
+
+        Hotel finalHotelSeleccionado = hotelSeleccionado;
+        List<Habitacion> habitacionesOcupadas = habitacionesList.stream()
+                .filter(h -> h.getHotel().getId() == finalHotelSeleccionado.getId() && h.isOcupado())
+                .toList();
+
+        if (habitacionesOcupadas.isEmpty()) {
+            System.out.println("No hay habitaciones ocupadas en este hotel.");
+        } else {
+            habitacionesOcupadas.forEach(habitacion -> {
+                System.out.println("\n---------------------------------------------");
+                System.out.println("NÚMERO DE HABITACIÓN: " + habitacion.getId());
+                System.out.println("TIPO: " + habitacion.getTipoHabit().getNombre());
+                System.out.println("Cantidad de camas: " + habitacion.getCantCama());
+                System.out.println("Cama Doble: " + (habitacion.isCamaDoble() ? "Sí" : "No"));
+                System.out.println("Estado actual: Ocupado");
+                System.out.println("Tiene aire acondicionado: " + (habitacion.isAireAcon() ? "Sí" : "No"));
+                System.out.println("Tiene balcón: " + (habitacion.isBalcon() ? "Sí" : "No"));
+                System.out.println("Cuenta con amenities: " + (habitacion.isAmenities() ? "Sí" : "No"));
+                System.out.println("Vista: " + habitacion.getVista());
+                System.out.println("---------------------------------------------");
+            });
+        }
+
+    }
+
     public void viewAllHotels() {
         List<Hotel> hotels = hotelController.getAllHotels();
         if (hotels.isEmpty()) {
@@ -213,8 +378,5 @@ public class HotelView {
             }
         }
     }
-
-
-
 
 }
