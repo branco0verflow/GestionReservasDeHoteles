@@ -120,4 +120,10 @@ public class Huesped {
         this.name = nombre;
     }
 
+    public Huesped(int id, String name, String apaterno, String amaterno) {
+        this.id = id;
+        this.name = name;
+        this.apaterno = apaterno;
+        this.amaterno = amaterno;
+    }
 }

@@ -30,7 +30,7 @@ public class ReservaView {
             System.out.println("2. Listar reservas");
             System.out.println("3. Modificar reserva");
             System.out.println("4. Eliminar reserva según ID");
-            System.out.println("5. Filtrar habitaciones entre fechas");
+            System.out.println("5. Filtrar habitaciones reservadas entre fechas");
 
             System.out.println("\nCHECK IN - CHECK OUT");
             System.out.println("6. Marcar habitación como ocupada");
@@ -54,7 +54,7 @@ public class ReservaView {
                     deleteReserva();
                     break;
                 case 5:
-                    filtrarHabitaciones();
+                    filtrarHabitacionesReservadasEntreFechas();
                     break;
                 case 6:
                     MarcarOcupadas();
@@ -71,7 +71,7 @@ public class ReservaView {
     }
 
 
-    public void filtrarHabitaciones(){
+    public void filtrarHabitacionesReservadasEntreFechas(){
         System.out.print("Ingrese la fecha de inicio (YYYY-MM-DD): ");
         String fechaInicio = scanner.nextLine();
         System.out.print("Ingrese la fecha de fin (YYYY-MM-DD): ");

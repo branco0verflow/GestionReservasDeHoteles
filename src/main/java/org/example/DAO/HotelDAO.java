@@ -1,9 +1,6 @@
 package org.example.DAO;
 
-import org.example.model.Ciudad;
-import org.example.model.Hotel;
-import org.example.model.Pais;
-import org.example.model.TipoDoc;
+import org.example.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -16,6 +13,119 @@ public class HotelDAO {
     private ConnectionDAO connectionDAO;
 
     public HotelDAO() {this.connectionDAO = new ConnectionDAO();}
+
+
+
+    public List<HabitacionReserva> EncontrarHabitacionesOcupadas(int idHotel) {
+        String query = "SELECT " +
+                "    h.idHabitaciones AS habitacionID, " +
+                "    h.vista AS vistaHabitacion, " +
+                "    th.idTipoHab, th.nombre AS tipoHabitacion, " +
+                "    ho.idHotel, ho.nombre AS nombreHotel, " +
+                "    r.idReserva, r.fechaReserva, " +
+                "    hu.idHuesped, hu.nombre AS nombreHuesped, " +
+                "    hu.apaterno AS apellidoPaterno, hu.amaterno AS apellidoMaterno " +
+                "FROM " +
+                "    Habitaciones h " +
+                "INNER JOIN habitacionReserva hr ON h.idHabitaciones = hr.idHabitacion " +
+                "INNER JOIN Reservas r ON hr.idReserva = r.idReserva " +
+                "INNER JOIN Huespedes hu ON r.idHuesped = hu.idHuesped " +
+                "INNER JOIN Hoteles ho ON h.idHotel = ho.idHotel " +
+                "INNER JOIN tipoHabitacion th ON h.idTipoHab = th.idTipoHab " +
+                "WHERE h.idHotel = ? AND h.ocupado = TRUE;";
+
+        List<HabitacionReserva> habitaciones = new ArrayList<>();
+
+        try (ResultSet rs = connectionDAO.executeQuery(query, idHotel)) {
+            while (rs.next()) {
+                Hotel hotel = new Hotel(rs.getInt("idHotel"), rs.getString("nombreHotel"));
+                TipoHabit tipo = new TipoHabit(rs.getInt("idTipoHab"), rs.getString("tipoHabitacion"));
+
+                Habitacion habitacion = new Habitacion(
+                        rs.getInt("habitacionID"),
+                        true,
+                        rs.getString("vistaHabitacion"),
+                        tipo,
+                        hotel
+                );
+
+                Huesped huesped = new Huesped(
+                        rs.getInt("idHuesped"),
+                        rs.getString("nombreHuesped"),
+                        rs.getString("apellidoPaterno"),
+                        rs.getString("apellidoMaterno")
+                );
+
+                Reserva reserva = new Reserva(
+                        rs.getInt("idReserva"),
+                        huesped,
+                        rs.getDate("fechaReserva")
+                );
+
+                habitaciones.add(new HabitacionReserva(habitacion, reserva));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return habitaciones;
+    }
+
+    public List<HabitacionReserva> EncontrarHabitacionesSegunIdHotel(int idHotel) {
+        String query = "SELECT " +
+                "    h.idHabitaciones AS habitacionID, " +
+                "    h.vista AS vistaHabitacion, " +
+                "    th.idTipoHab, th.nombre AS tipoHabitacion, " +
+                "    ho.idHotel, ho.nombre AS nombreHotel, " +
+                "    r.idReserva, r.fechaReserva, " +
+                "    hu.idHuesped, hu.nombre AS nombreHuesped, " +
+                "    hu.apaterno AS apellidoPaterno, hu.amaterno AS apellidoMaterno " +
+                "FROM " +
+                "    Habitaciones h " +
+                "LEFT JOIN habitacionReserva hr ON h.idHabitaciones = hr.idHabitacion " +
+                "LEFT JOIN Reservas r ON hr.idReserva = r.idReserva " +
+                "LEFT JOIN Huespedes hu ON r.idHuesped = hu.idHuesped " +
+                "INNER JOIN Hoteles ho ON h.idHotel = ho.idHotel " +
+                "INNER JOIN tipoHabitacion th ON h.idTipoHab = th.idTipoHab " +
+                "WHERE h.idHotel = ?;";
+
+        List<HabitacionReserva> habitaciones = new ArrayList<>();
+
+        try (ResultSet rs = connectionDAO.executeQuery(query, idHotel)) {
+            while (rs.next()) {
+                // Crear objetos necesarios
+                Hotel hotel = new Hotel(rs.getInt("idHotel"), rs.getString("nombreHotel"));
+                TipoHabit tipo = new TipoHabit(rs.getInt("idTipoHab"), rs.getString("tipoHabitacion"));
+
+                Habitacion habitacion = new Habitacion(
+                        rs.getInt("habitacionID"),
+                        rs.getString("vistaHabitacion"),
+                        tipo,
+                        hotel
+                );
+
+                Huesped huesped = (rs.getInt("idHuesped") != 0) ? new Huesped(
+                        rs.getInt("idHuesped"),
+                        rs.getString("nombreHuesped"),
+                        rs.getString("apellidoPaterno"),
+                        rs.getString("apellidoMaterno")
+                ) : null;
+
+                Reserva reserva = (rs.getInt("idReserva") != 0) ? new Reserva(
+                        rs.getInt("idReserva"),
+                        huesped,
+                        rs.getDate("fechaReserva")
+                ) : null;
+
+                habitaciones.add(new HabitacionReserva(habitacion, reserva));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return habitaciones;
+    }
+
+
 
 
     // Crear Hotel

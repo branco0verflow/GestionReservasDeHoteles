@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.DAO.HotelDAO;
 import org.example.DAO.HuespedDAO;
 import org.example.model.Ciudad;
+import org.example.model.HabitacionReserva;
 import org.example.model.Hotel;
 import org.example.model.Pais;
 
@@ -17,6 +18,14 @@ public class HotelController {
 
     public HotelController() {
         this.hotelDAO = new HotelDAO();
+    }
+
+    public List<HabitacionReserva> EncontrarHabitacionOcupadaSegunIdHotel(int idHotel){
+        return hotelDAO.EncontrarHabitacionesOcupadas(idHotel);
+    }
+
+    public List<HabitacionReserva> EncontrarHabitacionesSegunIdHotel(int idHotel){
+        return hotelDAO.EncontrarHabitacionesSegunIdHotel(idHotel);
     }
 
     public boolean addHotel(Hotel hotel) {
