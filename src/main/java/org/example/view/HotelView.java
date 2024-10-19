@@ -74,20 +74,18 @@ public class HotelView {
                 System.out.println("2. Filtrar por ciudad");
                 System.out.println("3. Filtrar por cantidad de estrellas");
                 System.out.println("4. Aplicar filtros y mostrar resultados");
-                System.out.println("5. Salir");
+                System.out.println("0. Salir");
                 System.out.print("\nSeleccione una opción: ");
                 int opcion = scanner.nextInt();
                 scanner.nextLine();
 
                 switch (opcion) {
                     case 1:
-                        System.out.print("Ingrese el nombre del hotel: ");
+                        System.out.print("\nIngrese el nombre del hotel: ");
                         String name = scanner.nextLine();
 
                         List<Hotel> hotelesList = hotelController.getAllHotels();
-                        List<Hotel> hoteles = hotelesList.stream()
-                                .filter(h -> h.getName().toLowerCase().contains(name.toLowerCase()))
-                                .collect(Collectors.toList());
+                        List<Hotel> hoteles = hotelesList.stream().filter(h -> h.getName().toLowerCase().contains(name.toLowerCase())).collect(Collectors.toList());
 
                         if (hoteles.isEmpty()) {
                             System.out.println("\nNo se encontraron hoteles con ese nombre.\n");
@@ -98,14 +96,38 @@ public class HotelView {
                         break;
 
                     case 2:
-                        System.out.print("Ingrese la ciudad del hotel: ");
+                        System.out.print("\nIngrese la ciudad del hotel: ");
                         String ciudad = scanner.nextLine();
+
+                        List<Hotel> hotelesLis = hotelController.getAllHotels();
+                        List<Hotel> hotels = hotelesLis.stream()
+                                .filter(h -> h.getCiudad().getName().equalsIgnoreCase(ciudad))
+                                .collect(Collectors.toList());
+
+                        if (hotels.isEmpty()) {
+                            System.out.println("No se encontraron hoteles en la ciudad indicada.");
+                        } else {
+                            System.out.println("Hoteles encontrados:");
+                            hotels.forEach(h -> System.out.println(h.getName() + " - " + h.getCiudad().getName()));
+                        }
+
                         break;
 
                     case 3:
-                        System.out.print("Ingrese la cantidad de estrellas: ");
+                        System.out.print("\nIngrese la cantidad de estrellas: ");
                         int estrellas = scanner.nextInt();
                         scanner.nextLine();
+
+                        List<Hotel> hotelesLista = hotelController.getAllHotels();
+                        List<Hotel> hotele = hotelesLista.stream().filter(h -> h.getCantEstrella() == estrellas).collect(Collectors.toList());
+
+                        if (hotele.isEmpty()) {
+                            System.out.println("No se encontraron hoteles con esa cantidad de estrellas.");
+                        } else {
+                            System.out.println("\n\nHoteles encontrados:\n");
+                            hotele.forEach(h -> System.out.println(h.getName() + " - " + h.getCantEstrella() + " estrellas"));
+                        }
+
                         break;
 
                     case 4:
@@ -127,7 +149,7 @@ public class HotelView {
                         }
                         break;
 
-                    case 5:
+                    case 0:
                         System.out.println("Saliendo del menú...");
                         continuar = false;
                         break;
@@ -137,7 +159,6 @@ public class HotelView {
                 }
             }
         }
-
     public List<Hotel> buscarHoteles(String nombre, String ciudad, Integer cantEstrella) {
         List<Hotel> hotelesList = hotelController.getAllHotels();
         return hotelesList.stream()
@@ -146,13 +167,6 @@ public class HotelView {
                 .filter(h -> (cantEstrella == null || h.getCantEstrella() == cantEstrella))
                 .toList();
     }
-
-
-
-
-
-
-
 
     public void addHotel() {
         System.out.print("Ingrese el nombre del hotel: ");

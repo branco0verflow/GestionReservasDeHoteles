@@ -25,15 +25,16 @@ public class ReservaView {
     public void manageReserva() {
         int option = -1;
         do {
-            System.out.println("\n\n\n----- GESTIÓN DE RESERVAS -----");
+            System.out.println("\n\n\n    GESTIÓN DE RESERVAS\n");
             System.out.println("1. Crear nueva reserva");
             System.out.println("2. Listar reservas");
             System.out.println("3. Modificar reserva");
             System.out.println("4. Eliminar reserva según ID");
+            System.out.println("5. Filtrar habitaciones entre fechas");
 
             System.out.println("\nCHECK IN - CHECK OUT");
-            System.out.println("5. Marcar habitación como ocupada");
-            System.out.println("6. Marcar habitación como desocupada");
+            System.out.println("6. Marcar habitación como ocupada");
+            System.out.println("7. Marcar habitación como desocupada");
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
             option = scanner.nextInt();
@@ -53,9 +54,12 @@ public class ReservaView {
                     deleteReserva();
                     break;
                 case 5:
-                    MarcarOcupadas();
+                    //filtrarHabitaciones();
                     break;
                 case 6:
+                    MarcarOcupadas();
+                    break;
+                case 7:
                     MarcarDESOcupadas();
                     break;
                 case 0:
@@ -67,7 +71,24 @@ public class ReservaView {
     }
 
 
+    public void filtrarHabitaciones(){
+        System.out.print("Ingrese la fecha de inicio (YYYY-MM-DD): ");
+        String fechaInicio = scanner.nextLine();
+        System.out.print("Ingrese la fecha de fin (YYYY-MM-DD): ");
+        String fechaFin = scanner.nextLine();
 
+
+
+
+
+
+
+
+
+
+
+
+    }
 
 
     private void MarcarDESOcupadas() {
