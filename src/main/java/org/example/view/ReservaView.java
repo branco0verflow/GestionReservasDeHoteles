@@ -33,8 +33,9 @@ public class ReservaView {
             System.out.println("5. Filtrar habitaciones reservadas entre fechas");
 
             System.out.println("\nCHECK IN - CHECK OUT");
-            System.out.println("6. Marcar habitación como ocupada");
-            System.out.println("7. Marcar habitación como desocupada");
+            System.out.println("6. Marcar habitación con reserva como ocupada");
+            System.out.println("7. Marcar habitación como ocupada - SIN PREVIA RESERVA -");
+            System.out.println("8. Marcar habitación como desocupada");
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
             option = scanner.nextInt();
@@ -57,9 +58,12 @@ public class ReservaView {
                     filtrarHabitacionesReservadasEntreFechas();
                     break;
                 case 6:
-                    MarcarOcupadas();
+                    MarcarOcupadasConReserva();
                     break;
                 case 7:
+                    marcarHabitacionesSinReservasComoOcupadas();
+                    break;
+                case 8:
                     MarcarDESOcupadas();
                     break;
                 case 0:
@@ -97,6 +101,75 @@ public class ReservaView {
 
     }
 
+    public void marcarHabitacionesSinReservasComoOcupadas(){
+        System.out.println("\nMARCA COMO OCUPADA UNA HABITACIÓN\n\n");
+
+
+            System.out.println("Selecciona el hotel\n");
+            List<Hotel> listHotels = reservaController.listAllHotels();
+            for(Hotel hotel : listHotels){
+                System.out.println(hotel.getId() + "- " + hotel.getName());
+            }
+
+
+            System.out.print("\nSelecciona un hotel para ver sus habitaciones: ");
+            int idHotelSeleccionado = scanner.nextInt();
+
+            // Obtener el hotel correspondiente por su ID
+
+            Hotel hotelSeleccionado = listHotels.stream()
+                    .filter(h -> h.getId() == idHotelSeleccionado)
+                    .findFirst()
+                    .orElse(null);
+
+            if (hotelSeleccionado == null) {
+                System.out.println("No se encontró un hotel con el ID proporcionado.");
+                return;
+            }
+
+            System.out.println("\n\n---------------------------------------------");
+            System.out.println("\nHOTEL: " + hotelSeleccionado.getName() + "\n");
+
+
+            // Filtrar habitaciones del hotel seleccionado
+            List<Habitacion> habitacionesList = reservaController.listAllHabitaciones();
+            List<Habitacion> habitacionesDelHotel = habitacionesList.stream()
+                    .filter(h -> h.getHotel().getId() == idHotelSeleccionado)
+                    .toList();
+
+            if (habitacionesDelHotel.isEmpty()) {
+                System.out.println("No hay habitaciones registradas para este hotel.");
+            } else {
+                habitacionesDelHotel.forEach(habitacion -> {
+                    System.out.println("NÚMERO DE HABITACIÓN: " + habitacion.getId() +
+                            "\nTIPO: " + habitacion.getTipoHabit().getNombre());
+                    System.out.println("Cantidad de camas: " + habitacion.getCantCama());
+                    System.out.println("Cama Doble: " + (habitacion.isCamaDoble() ? "Sí" : "No"));
+                    System.out.println("Estado actual: " + (habitacion.isOcupado() ? "Ocupado" : "Disponible"));
+                    System.out.println("Tiene aire acondicionado: " + (habitacion.isAireAcon() ? "Sí" : "No"));
+                    System.out.println("Tiene balcón: " + (habitacion.isBalcon() ? "Sí" : "No"));
+                    System.out.println("Cuenta con amenities: " + (habitacion.isAmenities() ? "Sí" : "No"));
+                    System.out.println("Tiene vista a: " + habitacion.getVista());
+                    System.out.println("---------------------------------------------");
+                });
+            }
+
+        System.out.print("\nIngrese la habitación que quiera marcar como ocupada: ");
+        int habOcupada = scanner.nextInt();
+        scanner.nextLine();
+
+        boolean UpdateOcupada = reservaController.UpdateHabitacionToOcupada(habOcupada);
+
+        if (UpdateOcupada){
+            System.out.println("\nLa habitación "+ habOcupada + " se marcó como ocupada\n");
+        }else{
+            System.out.println("Ocurrió un error al marcar esta habitación como ocupada");
+        }
+
+
+
+
+    }
 
     private void MarcarDESOcupadas() {
         boolean salir = false;
@@ -153,7 +226,7 @@ public class ReservaView {
         }
     }
 
-    private void MarcarOcupadas(){
+    private void MarcarOcupadasConReserva(){
         boolean salir = false;
 
             System.out.println("\n\nREGISTRAR HABITACIÓN COMO OCUPADA\n");
@@ -182,7 +255,7 @@ public class ReservaView {
             for(HabitacionReserva habRes : HabitacionesReservadas){
 
                 System.out.println("FECHA DE RESERVA: " + habRes.getReserva().getFechaReserva());
-                System.out.println("Habitacion Asignada: " + habRes.getHabitacion().getId() +"\n"+  " HOTEL: " + habRes.getHabitacion().getHotel().getName() + "\n");
+                System.out.println("Habitacion Asignada: " + habRes.getHabitacion().getId() +"\n"+  "HOTEL: " + habRes.getHabitacion().getHotel().getName() + "\n");
                 System.out.println("Tipo de habitación: " + habRes.getHabitacion().getTipoHabit().getNombre());
                 System.out.println("Actualmente: " + (habRes.getHabitacion().isOcupado() ? "Ocupada" : "Desocupada"));
                 System.out.println("\n-----------------------------------------");

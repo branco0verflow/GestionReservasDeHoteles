@@ -23,7 +23,7 @@ public class HuespedView {
     public void manageHuesp() {
         int option = -1;
         do {
-            System.out.println("\n\n\n----- Gestión de Huéspedes -----");
+            System.out.println("\n\nGESTIÓN DE HUÉSPEDES\n");
             System.out.println("1. Ingresar un nuevo huésped");
             System.out.println("2. Listar huéspedes");
             System.out.println("3. Modificar un huésped");
@@ -53,7 +53,6 @@ public class HuespedView {
             }
         } while (option != 0);
     }
-
 
     private void insertHuesped(){
         System.out.print("Ingrese el nombre: ");
@@ -243,7 +242,6 @@ public class HuespedView {
 
 
     }
-
 
     private boolean validarFecha(String fecha) {
         try {

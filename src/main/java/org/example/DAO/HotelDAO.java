@@ -14,7 +14,47 @@ public class HotelDAO {
 
     public HotelDAO() {this.connectionDAO = new ConnectionDAO();}
 
+    public List<Habitacion> encontrarHabitacionesOcupadasSinReserva(int idHotel) {
+        String query = "SELECT " +
+                "    h.idHabitaciones AS habitacionID, " +
+                "    h.vista AS vistaHabitacion, " +
+                "    th.idTipoHab, th.nombre AS tipoHabitacion, " +
+                "    ho.idHotel, ho.nombre AS nombreHotel " +
+                "FROM " +
+                "    Habitaciones h " +
+                "INNER JOIN Hoteles ho ON h.idHotel = ho.idHotel " +
+                "INNER JOIN tipoHabitacion th ON h.idTipoHab = th.idTipoHab " +
+                "LEFT JOIN habitacionReserva hr " +
+                "    ON h.idHabitaciones = hr.idHabitacion " +
+                "    AND CURDATE() BETWEEN hr.fechaInicio AND hr.fechaFin " +
+                "WHERE " +
+                "    h.idHotel = ? " +
+                "    AND h.ocupado = TRUE " +
+                "    AND hr.idReserva IS NULL;";
 
+        List<Habitacion> habitaciones = new ArrayList<>();
+
+        try (ResultSet rs = connectionDAO.executeQuery(query, idHotel)) {
+            while (rs.next()) {
+                Hotel hotel = new Hotel(rs.getInt("idHotel"), rs.getString("nombreHotel"));
+                TipoHabit tipo = new TipoHabit(rs.getInt("idTipoHab"), rs.getString("tipoHabitacion"));
+
+                Habitacion habitacion = new Habitacion(
+                        rs.getInt("habitacionID"),
+                        true,
+                        rs.getString("vistaHabitacion"),
+                        tipo,
+                        hotel
+                );
+
+                habitaciones.add(habitacion);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return habitaciones;
+    }
 
     public List<HabitacionReserva> EncontrarHabitacionesOcupadas(int idHotel) {
         String query = "SELECT " +
@@ -124,8 +164,6 @@ public class HotelDAO {
         }
         return habitaciones;
     }
-
-
 
 
     // Crear Hotel

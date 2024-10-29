@@ -1,12 +1,6 @@
 package org.example.controller;
-
 import org.example.DAO.HotelDAO;
-import org.example.DAO.HuespedDAO;
-import org.example.model.Ciudad;
-import org.example.model.HabitacionReserva;
-import org.example.model.Hotel;
-import org.example.model.Pais;
-
+import org.example.model.*;
 import java.util.List;
 
 public class HotelController {
@@ -18,6 +12,10 @@ public class HotelController {
 
     public HotelController() {
         this.hotelDAO = new HotelDAO();
+    }
+
+    public List<Habitacion> EncontrarHabitacionOcupadaSinReservaSegunIdHotel(int idHotel){
+        return hotelDAO.encontrarHabitacionesOcupadasSinReserva(idHotel);
     }
 
     public List<HabitacionReserva> EncontrarHabitacionOcupadaSegunIdHotel(int idHotel){

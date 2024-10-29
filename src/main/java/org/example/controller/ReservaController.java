@@ -1,10 +1,7 @@
 package org.example.controller;
 
 import org.example.DAO.ReservaDAO;
-import org.example.model.Habitacion;
-import org.example.model.HabitacionReserva;
-import org.example.model.Huesped;
-import org.example.model.Reserva;
+import org.example.model.*;
 
 import java.util.List;
 
@@ -13,6 +10,14 @@ public class ReservaController {
     private ReservaDAO reservaDAO;
 
     public ReservaController() { this.reservaDAO = new ReservaDAO();}
+
+    public List<Hotel> listAllHotels(){
+        return reservaDAO.getAllHotels();
+    }
+
+    public List<Habitacion> listAllHabitaciones(){
+        return reservaDAO.getAllHabitaciones();
+    }
 
     public boolean UpdateHabitacionToOcupada(int idHabit){
         return reservaDAO.updateHabitacionToOcupada(idHabit);

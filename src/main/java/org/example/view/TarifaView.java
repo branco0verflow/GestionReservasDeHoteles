@@ -12,19 +12,30 @@ public class TarifaView {
     private TarifaController tarifaController;
     private Scanner scanner;
 
+    // Códigos ANSI para colores
+    public static final String RESET = "\u001B[0m";
+    public static final String RED = "\u001B[31m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String BLUE = "\u001B[34m";
+    public static final String CYAN = "\u001B[36m";
 
-    public TarifaView(Scanner scanner) { this.tarifaController = new TarifaController(); this.scanner = scanner;}
+    public TarifaView(Scanner scanner) {
+        this.tarifaController = new TarifaController();
+        this.scanner = scanner;
+    }
 
     public void manageTarifa() {
         int option = -1;
         do {
-            System.out.println("\n\n\n----- GESTIÓN DE TARIFAS -----");
-            System.out.println("1. Crear nueva tarifa");
-            System.out.println("2. Listar tarifas");
-            System.out.println("3. Modificar tarifa");
-            System.out.println("4. Eliminar tarifa según ID");
-            System.out.println("0. Volver al menú principal");
-            System.out.print("Seleccione una opción: ");
+            System.out.println(BLUE + "\n\nGESTIÓN DE TARIFAS\n" + RESET);
+            System.out.println(GREEN + "1. Crear nueva tarifa" + RESET);
+            System.out.println(GREEN + "2. Listar tarifas" + RESET);
+            System.out.println(GREEN + "3. Modificar tarifa" + RESET);
+            System.out.println(GREEN + "4. Eliminar tarifa según ID" + RESET);
+            System.out.println(YELLOW + "0. Volver al menú principal" + RESET);
+            System.out.print(CYAN + "Seleccione una opción: " + RESET);
+
             option = scanner.nextInt();
             scanner.nextLine();
 
@@ -44,11 +55,10 @@ public class TarifaView {
                 case 0:
                     break;
                 default:
-                    System.out.println("Opción no válida. Intente nuevamente.");
+                    System.out.println(RED + "Opción no válida. Intente nuevamente." + RESET);
             }
         } while (option != 0);
     }
-
 
     public void addTarifa(){
         System.out.print("Ingresa el nombre de la nueva tarifa: ");

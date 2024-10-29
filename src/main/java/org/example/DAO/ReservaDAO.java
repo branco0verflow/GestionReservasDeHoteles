@@ -47,8 +47,67 @@ public class ReservaDAO {
         return habitaciones;
     }
 
+    // LISTAR Hoteles
+    public List<Hotel> getAllHotels() {
+        String query = "SELECT o.idHotel, o.nombre, o.idPais, p.nombreP, o.idCiudad, c.nombreC, o.cantEstrella, o.direccion FROM hoteles o, paises p, ciudades c WHERE o.idPais = p.idPais AND o.idCiudad = c.idCiudad ORDER BY o.idHotel ASC";
+        List<Hotel> hotels = new ArrayList<>();
+        try {
+            ResultSet resultSet = connectionDAO.executeQuery(query);
 
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String nombre = resultSet.getString(2);
+                Pais pais = new Pais(resultSet.getInt(3), resultSet.getString(4));
+                Ciudad ciudad = new Ciudad(resultSet.getInt(5), resultSet.getString(6), pais);
+                int cantEstrella = resultSet.getInt(7);
+                String direccion = resultSet.getString(8);
 
+                Hotel hotel = new Hotel(id, nombre, pais, ciudad, cantEstrella, direccion);
+                hotels.add(hotel);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return hotels;
+    }
+
+    // LISTAR Habitaciones
+    public List<Habitacion> getAllHabitaciones() {
+        String query = "SELECT h.idHabitaciones, h.cantCama, h.camaDoble, h.ocupado, h.aireAcon, h.balcon, h.amenities, h.vista, " +
+                "th.idTipoHab, th.nombre AS tipoNombre, ho.idHotel, ho.nombre AS hotelNombre " +
+                "FROM habitaciones h " +
+                "JOIN tipoHabitacion th ON h.idTipoHab = th.idTipoHab " +
+                "JOIN hoteles ho ON h.idHotel = ho.idHotel " +
+                "ORDER BY h.idHabitaciones ASC";
+
+        List<Habitacion> habitaciones = new ArrayList<>();
+
+        try {
+            ResultSet resultSet = connectionDAO.executeQuery(query);
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                int cantCama = resultSet.getInt(2);
+                boolean camaDoble = resultSet.getBoolean(3);
+                boolean ocupado = resultSet.getBoolean(4);
+                boolean aireAcon = resultSet.getBoolean(5);
+                boolean balcon = resultSet.getBoolean(6);
+                boolean amenities = resultSet.getBoolean(7);
+                String vista = resultSet.getString(8);
+
+                TipoHabit tipoHabitacion = new TipoHabit(resultSet.getInt(9), resultSet.getString(10));
+                Hotel hotel = new Hotel(resultSet.getInt(11), resultSet.getString(12));
+
+                Habitacion habitacion = new Habitacion(id, cantCama, camaDoble, ocupado, aireAcon, balcon, amenities, vista, tipoHabitacion, hotel);
+
+                habitaciones.add(habitacion);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return habitaciones;
+    }
 
     public boolean updateHabitacionReserva(int idReserva, String fechaInicio, String fechaFin, String observacion) {
         String query = "UPDATE habitacionReserva SET fechaInicio = ?, fechaFin = ?, observaciones = ? " +
@@ -113,7 +172,7 @@ public class ReservaDAO {
 
     public List<HabitacionReserva> HabitacionSegunIDHuesped(int idHuesped) {
         String query = "SELECT hab.idHabitaciones, hab.ocupado, hab.vista, " +
-                "th.idTipoHab, th.nombre, hab.idHotel, h.nombre, " +
+                "th.idTipoHab, th.nombre, hab.idHotel, h.nombre as nombreHotel, " +
                 "r.idReserva, r.cantPersonas, r.fechaReserva " +
                 "FROM habitaciones hab " +
                 "INNER JOIN tipoHabitacion th ON hab.idTipoHab = th.idTipoHab " +
@@ -128,7 +187,7 @@ public class ReservaDAO {
             while (rs.next()) {
                 Habitacion habitacion = new Habitacion(rs.getInt("idHabitaciones"), rs.getBoolean("ocupado"), rs.getString("vista"),
                         new TipoHabit(rs.getInt("idTipoHab"), rs.getString("nombre")),
-                        new Hotel(rs.getInt("idHotel"), rs.getString("nombre")));
+                        new Hotel(rs.getInt("idHotel"), rs.getString("nombreHotel")));
                 Reserva reserva = new Reserva(rs.getInt("idReserva"), rs.getInt("cantPersonas"), rs.getDate("fechaReserva"));
 
 

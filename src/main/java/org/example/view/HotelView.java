@@ -14,23 +14,34 @@ public class HotelView {
     private HabitacionController habitController;
     private Scanner scanner;
 
+    // Códigos ANSI para colores
+    public static final String RESET = "\u001B[0m";
+    public static final String RED = "\u001B[31m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String BLUE = "\u001B[34m";
+    public static final String CYAN = "\u001B[36m";
 
-    public HotelView(Scanner scanner) { this.hotelController = new HotelController(); this.scanner = scanner; this.habitController = new HabitacionController();}
+    public HotelView(Scanner scanner) {
+        this.hotelController = new HotelController();
+        this.habitController = new HabitacionController();
+        this.scanner = scanner;
+    }
 
     public void manageHotel() {
         int option = -1;
         do {
-            System.out.println("\n\n\n----- Gestión de Hoteles -----");
-            System.out.println("1. Crear nuevo Hotel");
-            System.out.println("2. Listar hoteles");
-            System.out.println("3. Modificar un hoteles");
-            System.out.println("4. Eliminar un hotel\n");
+            System.out.println(BLUE + "\n\nGESTIÓN DE HOTELES\n" + RESET);
+            System.out.println(GREEN + "1. Crear nuevo Hotel" + RESET);
+            System.out.println(GREEN + "2. Listar hoteles" + RESET);
+            System.out.println(GREEN + "3. Modificar un hotel" + RESET);
+            System.out.println(GREEN + "4. Eliminar un hotel\n" + RESET);
+            System.out.println(CYAN + "5. Ver habitaciones ocupadas" + RESET);
+            System.out.println(CYAN + "6. Filtrar hoteles" + RESET);
+            System.out.println(CYAN + "7. Ver habitaciones reservadas" + RESET);
+            System.out.println(YELLOW + "0. Volver al menú principal" + RESET);
+            System.out.print(YELLOW + "Seleccione una opción: " + RESET);
 
-            System.out.println("5. Ver habitaciones ocupadas");
-            System.out.println("6. Filtrar hoteles");
-            System.out.println("7. Ver habitaciones reservadas");
-            System.out.println("0. Volver al menú principal");
-            System.out.print("Seleccione una opción: ");
             option = scanner.nextInt();
             scanner.nextLine();
 
@@ -59,11 +70,10 @@ public class HotelView {
                 case 0:
                     break;
                 default:
-                    System.out.println("Opción no válida. Intente nuevamente.");
+                    System.out.println(RED + "Opción no válida. Intente nuevamente." + RESET);
             }
         } while (option != 0);
     }
-
 
     public void habitacionesConReserva() {
         List<Hotel> hotels = hotelController.getAllHotels();
@@ -132,8 +142,6 @@ public class HotelView {
             });
         }
     }
-
-
 
     public void filtrarHoteles(){
             Scanner scanner = new Scanner(System.in);
@@ -428,6 +436,22 @@ public class HotelView {
                 System.out.println("HOTEL: " + habitacion.getHabitacion().getHotel().getName());
                 System.out.println("ESTADO: " + (habitacion.getHabitacion().isOcupado() ? "Ocupada" : "Desocupada"));
                 System.out.println("\nRESPONSABLE DE RESERVA: " + habitacion.getReserva().getHuesped().getName() + " " + habitacion.getReserva().getHuesped().getApaterno() + " " + habitacion.getReserva().getHuesped().getAmaterno());
+                System.out.println("---------------------------------------------");
+            });
+        }
+
+        List<Habitacion> habitacionesOcupadasSinReserva = hotelController.EncontrarHabitacionOcupadaSinReservaSegunIdHotel(hotelSeleccionado.getId());
+
+        if (habitacionesOcupadasSinReserva.isEmpty()) {
+            System.out.println("No hay habitaciones ocupadas por fuera del sistema.");
+        } else {
+            habitacionesOcupadasSinReserva.forEach(habitacion -> {
+                System.out.println("\n---------------------------------------------");
+                System.out.println("Esta habitación fué actualizada como ocupada por fuera del sistema de reservas");
+                System.out.println("NÚMERO DE HABITACIÓN: " + habitacion.getId());
+                System.out.println("TIPO: " + habitacion.getTipoHabit().getNombre() + " VISTA A " + habitacion.getVista());
+                System.out.println("HOTEL: " + habitacion.getHotel().getName());
+                System.out.println("ESTADO: " + (habitacion.isOcupado() ? "Ocupada" : "Desocupada"));
                 System.out.println("---------------------------------------------");
             });
         }

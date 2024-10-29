@@ -22,7 +22,7 @@ public class HabitacionView {
     public void manageHabitacion() {
         int option = -1;
         do {
-            System.out.println("\n\n\n----- Gestión de Habitaciones -----");
+            System.out.println("\n\nGESTIÓN DE HABITACIONES\n");
             System.out.println("1. Crear nueva Habitación");
             System.out.println("2. Listar habitaciones según hotel");
             System.out.println("3. Modificar una habitación");
@@ -268,34 +268,6 @@ public class HabitacionView {
         }
     }
 
-    // Temporalmente en Deshuso Lista TODAS LAS HABITACIONES
-    public void listarHabitaciones() {
-        List<Hotel> listHotels = habitController.listHotels();
-        List<Habitacion> habitacionesList = habitController.getAllHabit();
-
-        for (Hotel hotel : listHotels) {
-            System.out.println("---------------------------------------------");
-            System.out.println("\nHOTEL: " + hotel.getName() + "\n");
-
-
-            // Filtrar habitaciones del hotel actual
-            habitacionesList.stream()
-                    .filter(h -> h.getHotel().getId() == hotel.getId())
-                    .forEach(habitacion -> {
-                        System.out.println("NÚMERO DE HABITACIÓN: " + habitacion.getId() + "\nTIPO: " + habitacion.getTipoHabit().getNombre());
-                        System.out.println("\nCantidad de camas: " + habitacion.getCantCama());
-                        System.out.println("Cama Doble: " + (habitacion.isCamaDoble() ? "Sí" : "No"));
-                        System.out.println("Estado actual: " + (habitacion.isOcupado() ? "Ocupado" : "Disponible"));
-                        System.out.println("Tiene aire acondicionado: " + (habitacion.isAireAcon() ? "Sí" : "No"));
-                        System.out.println("Tiene balcón: " + (habitacion.isBalcon() ? "Sí" : "No"));
-                        System.out.println("Cuenta con amenities: " + (habitacion.isAmenities() ? "Sí" : "No"));
-                        System.out.println("Tiene vista a: " + habitacion.getVista());
-                        System.out.println("---------------------------------------------");
-                    });
-
-
-        }
-    }
 
 
     public void deleteHabitacion() {
