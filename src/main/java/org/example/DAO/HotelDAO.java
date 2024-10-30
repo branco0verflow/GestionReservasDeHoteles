@@ -58,14 +58,19 @@ public class HotelDAO {
 
 
     public List<HabitacionReserva> EncontrarHabitacionesOcupadas(int idHotel) {
-        String query = "SELECT DISTINCT \n" +
+        String query = "SELECT \n" +
                 "    h.idHabitaciones AS habitacionID,\n" +
                 "    h.vista AS vistaHabitacion,\n" +
-                "    th.idTipoHab, th.nombre AS tipoHabitacion,\n" +
-                "    ho.idHotel, ho.nombre AS nombreHotel,\n" +
-                "    r.idReserva, r.fechaReserva,\n" +
-                "    hu.idHuesped, hu.nombre AS nombreHuesped,\n" +
-                "    hu.apaterno AS apellidoPaterno, hu.amaterno AS apellidoMaterno\n" +
+                "    th.idTipoHab, \n" +
+                "    th.nombre AS tipoHabitacion,\n" +
+                "    ho.idHotel, \n" +
+                "    ho.nombre AS nombreHotel,\n" +
+                "    r.idReserva, \n" +
+                "    r.fechaReserva,\n" +
+                "    hu.idHuesped, \n" +
+                "    hu.nombre AS nombreHuesped,\n" +
+                "    hu.apaterno AS apellidoPaterno, \n" +
+                "    hu.amaterno AS apellidoMaterno\n" +
                 "FROM \n" +
                 "    Habitaciones h\n" +
                 "INNER JOIN habitacionReserva hr ON h.idHabitaciones = hr.idHabitacion\n" +
@@ -74,7 +79,14 @@ public class HotelDAO {
                 "INNER JOIN Hoteles ho ON h.idHotel = ho.idHotel\n" +
                 "INNER JOIN tipoHabitacion th ON h.idTipoHab = th.idTipoHab\n" +
                 "WHERE \n" +
-                "    h.idHotel = ? AND h.ocupado = TRUE;\n";
+                "    h.idHotel = ? \n" +
+                "    AND h.ocupado = TRUE\n" +
+                "    AND r.fechaReserva = (\n" +
+                "        SELECT MAX(r2.fechaReserva)\n" +
+                "        FROM habitacionReserva hr2\n" +
+                "        INNER JOIN Reservas r2 ON hr2.idReserva = r2.idReserva\n" +
+                "        WHERE hr2.idHabitacion = h.idHabitaciones\n" +
+                "    );\n";
 
         List<HabitacionReserva> habitaciones = new ArrayList<>();
 
