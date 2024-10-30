@@ -432,7 +432,7 @@ public class HotelView {
         } else {
             habitacionesOcupadas.forEach(habitacion -> {
                 System.out.println("\n---------------------------------------------");
-                System.out.println("NÚMERO DE HABITACIÓN: " + habitacion.getId());
+                System.out.println("NÚMERO DE HABITACIÓN: " + habitacion.getHabitacion().getId() );
                 System.out.println("HOTEL: " + habitacion.getHabitacion().getHotel().getName());
                 System.out.println("ESTADO: " + (habitacion.getHabitacion().isOcupado() ? "Ocupada" : "Desocupada"));
                 System.out.println("\nRESPONSABLE DE RESERVA: " + habitacion.getReserva().getHuesped().getName() + " " + habitacion.getReserva().getHuesped().getApaterno() + " " + habitacion.getReserva().getHuesped().getAmaterno());

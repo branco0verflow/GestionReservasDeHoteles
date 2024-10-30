@@ -24,13 +24,13 @@ public class HotelDAO {
                 "    Habitaciones h " +
                 "INNER JOIN Hoteles ho ON h.idHotel = ho.idHotel " +
                 "INNER JOIN tipoHabitacion th ON h.idTipoHab = th.idTipoHab " +
-                "LEFT JOIN habitacionReserva hr " +
-                "    ON h.idHabitaciones = hr.idHabitacion " +
-                "    AND CURDATE() BETWEEN hr.fechaInicio AND hr.fechaFin " +
                 "WHERE " +
                 "    h.idHotel = ? " +
                 "    AND h.ocupado = TRUE " +
-                "    AND hr.idReserva IS NULL;";
+                "    AND NOT EXISTS ( " +
+                "        SELECT 1 FROM habitacionReserva hr " +
+                "        WHERE hr.idHabitacion = h.idHabitaciones " +
+                "    );";
 
         List<Habitacion> habitaciones = new ArrayList<>();
 
@@ -56,23 +56,25 @@ public class HotelDAO {
         return habitaciones;
     }
 
+
     public List<HabitacionReserva> EncontrarHabitacionesOcupadas(int idHotel) {
-        String query = "SELECT " +
-                "    h.idHabitaciones AS habitacionID, " +
-                "    h.vista AS vistaHabitacion, " +
-                "    th.idTipoHab, th.nombre AS tipoHabitacion, " +
-                "    ho.idHotel, ho.nombre AS nombreHotel, " +
-                "    r.idReserva, r.fechaReserva, " +
-                "    hu.idHuesped, hu.nombre AS nombreHuesped, " +
-                "    hu.apaterno AS apellidoPaterno, hu.amaterno AS apellidoMaterno " +
-                "FROM " +
-                "    Habitaciones h " +
-                "INNER JOIN habitacionReserva hr ON h.idHabitaciones = hr.idHabitacion " +
-                "INNER JOIN Reservas r ON hr.idReserva = r.idReserva " +
-                "INNER JOIN Huespedes hu ON r.idHuesped = hu.idHuesped " +
-                "INNER JOIN Hoteles ho ON h.idHotel = ho.idHotel " +
-                "INNER JOIN tipoHabitacion th ON h.idTipoHab = th.idTipoHab " +
-                "WHERE h.idHotel = ? AND h.ocupado = TRUE;";
+        String query = "SELECT DISTINCT \n" +
+                "    h.idHabitaciones AS habitacionID,\n" +
+                "    h.vista AS vistaHabitacion,\n" +
+                "    th.idTipoHab, th.nombre AS tipoHabitacion,\n" +
+                "    ho.idHotel, ho.nombre AS nombreHotel,\n" +
+                "    r.idReserva, r.fechaReserva,\n" +
+                "    hu.idHuesped, hu.nombre AS nombreHuesped,\n" +
+                "    hu.apaterno AS apellidoPaterno, hu.amaterno AS apellidoMaterno\n" +
+                "FROM \n" +
+                "    Habitaciones h\n" +
+                "INNER JOIN habitacionReserva hr ON h.idHabitaciones = hr.idHabitacion\n" +
+                "INNER JOIN Reservas r ON hr.idReserva = r.idReserva\n" +
+                "INNER JOIN Huespedes hu ON r.idHuesped = hu.idHuesped\n" +
+                "INNER JOIN Hoteles ho ON h.idHotel = ho.idHotel\n" +
+                "INNER JOIN tipoHabitacion th ON h.idTipoHab = th.idTipoHab\n" +
+                "WHERE \n" +
+                "    h.idHotel = ? AND h.ocupado = TRUE;\n";
 
         List<HabitacionReserva> habitaciones = new ArrayList<>();
 
